@@ -5,6 +5,50 @@ RIGHT_EYE = [33, 160, 158, 133, 153, 144]
 LEFT_EYE = [362, 385, 387, 263, 373, 380]
 MOUTH = [78, 308, 13, 14] 
 
+class SimpleKalmanFilter:
+    def __init__(self, process_noise, measurement_noise, estimation_error, initial_value=0.0):
+        """
+        A lightweight 1D Kalman Filter.
+        """
+        self.Q = process_noise      # Process noise
+        self.R = measurement_noise  # Measurement noise (Higher = heavier smoothing)
+        self.P = estimation_error   # Estimation error
+        self.X = initial_value      # State
+
+    def update(self, measurement):
+        # Prediction Phase
+        self.P = self.P + self.Q
+
+        # Update Phase
+        K = self.P / (self.P + self.R)
+        self.X = self.X + K * (measurement - self.X)
+        self.P = (1 - K) * self.P
+
+        return self.X
+
+# Initialize filters
+# Layer 1: Light filter for facial landmark
+landmark_filters = {}
+def get_smoothed_coordinate(idx, axis, raw_val):
+    key = f"{idx}_{axis}"
+    if key not in landmark_filters:
+        # Lower measurement noise (R) => lighter smoothing
+        landmark_filters[key] = SimpleKalmanFilter(
+            process_noise=1e-4, 
+            measurement_noise=1e-2, 
+            estimation_error=1.0, 
+            initial_value=raw_val
+        )
+    return landmark_filters[key].update(raw_val)
+
+# Layer 2: Heavy filter for EAR/MAR signal
+ear_filter = SimpleKalmanFilter(process_noise=1e-5,
+                                measurement_noise=1e-1,
+                                estimation_error=1.0)
+mar_filter = SimpleKalmanFilter(process_noise=1e-5,
+                                measurement_noise=1e-1,
+                                estimation_error=1.0)
+
 def euclidean_distance(p1, p2):
     return math.hypot(p2[0] - p1[0], p2[1] - p1[1])
 
@@ -23,15 +67,33 @@ def calculate_mar(landmarks, mouth_indices):
 
 def analyze_fatigue(face_landmarks, frame_width, frame_height):
     """
-    Converts normalized landmarks to pixel coordinates and calculates EAR/MAR.
+    Converts normalized landmarks, applies dual-layer Kalman filtering, 
+    and calculates smoothed EAR/MAR.
     """
-    # Convert normalized coordinates (0 to 1) to actual pixel coordinates
-    pixel_coords = [(int(landmark.x * frame_width), int(landmark.y * frame_height)) for landmark in face_landmarks]
+    relevant_indices = RIGHT_EYE + LEFT_EYE + MOUTH
     
-    # Calculate ratios
+    pixel_coords = {}
+    
+    # Phase 1: Landmark Smoothing (Light Filter)
+    # Memory Optimization: Only process the 16 specific points needed
+    for idx in relevant_indices:
+        landmark = face_landmarks[idx]
+        raw_x = landmark.x * frame_width
+        raw_y = landmark.y * frame_height
+        
+        smooth_x = get_smoothed_coordinate(idx, 'x', raw_x)
+        smooth_y = get_smoothed_coordinate(idx, 'y', raw_y)
+        
+        pixel_coords[idx] = (smooth_x, smooth_y)
+
+    # Calculate raw ratios using the smoothed landmarks
     left_ear = calculate_ear(pixel_coords, LEFT_EYE)
     right_ear = calculate_ear(pixel_coords, RIGHT_EYE)
-    avg_ear = (left_ear + right_ear) / 2.0
-    mar = calculate_mar(pixel_coords, MOUTH)
-    
-    return avg_ear, mar
+    raw_avg_ear = (left_ear + right_ear) / 2.0
+    raw_mar = calculate_mar(pixel_coords, MOUTH)
+
+    # Phase 2: Signal Smoothing (Heavy Filter)
+    smooth_ear = ear_filter.update(raw_avg_ear)
+    smooth_mar = mar_filter.update(raw_mar)
+
+    return smooth_ear, smooth_mar

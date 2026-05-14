@@ -57,12 +57,12 @@ class FatigueClassifier:
     def run_inference(self, input_data):
         """
         Feeds the image into the quantized MobileNet/CNN.
-        Returns a probability score for 'Fatigue'.
+        Returns a probability score for Fatigue state.
         """
         self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
         self.interpreter.invoke()
         
-        # Output probability for the 'Fatigue' class
+        # Output probability for the fatigue class
         prediction = self.interpreter.get_tensor(self.output_details[0]['index'])
         return prediction[0][0] 
 
