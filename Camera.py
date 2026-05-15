@@ -54,6 +54,8 @@ log_writer.writerow([
 # Testing State Variables
 current_condition = "Baseline"
 ground_truth_fatigue = False
+logging_interval = 0.05 # 0.5 means 2 logs per second)
+last_log_time = 0
 
 # 2. MAIN CAMERA LOOP
 with vision.FaceLandmarker.create_from_options(options) as landmarker:
@@ -110,20 +112,24 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
 
             # 3. Result
             current_time = time.strftime('%H:%M:%S')
-            print(f"\n[{current_time}] Condition: {current_condition} | GT Fatigue: {ground_truth_fatigue}")
-            print(f"  HEURISTIC -> Latency: {lat_h:.2f}ms | Peak RAM: {mem_h:.2f}KB | Alert: {alert}")
-            print(f"  DEEP LRN  -> Latency: {lat_dl:.2f}ms | Peak RAM: {mem_dl:.2f}KB | Prob: {fatigue_prob:.2%}")
+            current_time_sec = time.time()
+            
+            if (current_time_sec - last_log_time) >= logging_interval:
+                print(f"\n[{current_time}] Condition: {current_condition} | GT Fatigue: {ground_truth_fatigue}")
+                print(f"  HEURISTIC -> Latency: {lat_h:.2f}ms | Peak RAM: {mem_h:.2f}KB | Alert: {alert}")
+                print(f"  DEEP LRN  -> Latency: {lat_dl:.2f}ms | Peak RAM: {mem_dl:.2f}KB | Prob: {fatigue_prob:.2%}")
 
-            log_writer.writerow([
-                current_time, current_condition, 'Heuristic', round(lat_h, 2), 
-                round(mem_h, 2), round(avg_ear, 3), round(mar, 3), round(perclos, 3), 
-                '', alert, ground_truth_fatigue
-            ])
-            log_writer.writerow([
-                current_time, current_condition, 'Deep_Learning', round(lat_dl, 2), 
-                round(mem_dl, 2), '', '', '', round(fatigue_prob, 3), 
-                fatigue_prob > 0.8, ground_truth_fatigue
-            ])
+                log_writer.writerow([
+                    current_time, current_condition, 'Heuristic', round(lat_h, 2), 
+                    round(mem_h, 2), round(avg_ear, 3), round(mar, 3), round(perclos, 3), 
+                    '', alert, ground_truth_fatigue
+                ])
+                log_writer.writerow([
+                    current_time, current_condition, 'Deep_Learning', round(lat_dl, 2), 
+                    round(mem_dl, 2), '', '', '', round(fatigue_prob, 3), 
+                    fatigue_prob > 0.8, ground_truth_fatigue
+                ])
+                last_log_time = current_time_sec
 
             # Condition and ground truth
             cv2.putText(frame, f"Cond: {current_condition}", (360, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
