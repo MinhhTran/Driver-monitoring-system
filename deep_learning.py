@@ -57,14 +57,30 @@ class FatigueClassifier:
     def run_inference(self, input_data):
         """
         Feeds the image into the quantized MobileNet/CNN.
+        Automatically quantizes the input to INT8 and dequantizes the output.
         Returns a probability score for Fatigue state.
         """
-        self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
+        # 1. Quantize the input if the model expects INT8
+        input_details = self.input_details[0]
+        if input_details['dtype'] == np.int8:
+            scale, zero_point = input_details['quantization']
+            # Apply the quantization formula and cast to int8
+            input_data = (input_data / scale + zero_point).astype(np.int8)
+
+        # Feed the data to the interpreter
+        self.interpreter.set_tensor(input_details['index'], input_data)
         self.interpreter.invoke()
         
-        # Output probability for the fatigue class
-        prediction = self.interpreter.get_tensor(self.output_details[0]['index'])
-        return prediction[0][0] 
+        # 2. Get the output prediction
+        output_details = self.output_details[0]
+        prediction = self.interpreter.get_tensor(output_details['index'])
+        
+        # 3. Dequantize the output back to FLOAT32 if it is INT8
+        if output_details['dtype'] == np.int8:
+            scale, zero_point = output_details['quantization']
+            prediction = (prediction.astype(np.float32) - zero_point) * scale
+
+        return prediction[0][0]
 
 def process_pipeline_b(frame, face_landmarks):
     """
