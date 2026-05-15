@@ -2,15 +2,31 @@ import tensorflow as tf
 import numpy as np
 
 model = tf.keras.models.load_model('fatigue_model_base.h5')
+DATASET_DIR = 'dataset/train'
+
+# batch_size = 1 => yield one image at a time.
+calib_ds = tf.keras.utils.image_dataset_from_directory(
+    DATASET_DIR,
+    color_mode="grayscale",
+    image_size=(96, 96),
+    batch_size=1,
+    shuffle=True
+)
+
+# The same normalization as in training
+normalization_layer = tf.keras.layers.Rescaling(1./255)
+calib_ds = calib_ds.map(lambda x, y: normalization_layer(x))
 
 def representative_data_gen():
-    for _ in range(100):
-        data = np.random.rand(1, 96, 96, 1).astype(np.float32)
-        yield [data]
+    for input_value in calib_ds.take(100):
+        yield [input_value]
 
+# Run TFLite converter
 converter = tf.lite.TFLiteConverter.from_keras_model(model)
 converter.optimizations = [tf.lite.Optimize.DEFAULT]
 converter.representative_dataset = representative_data_gen
+
+# Enforce full int8 quantization for both weights and activation
 converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
 converter.inference_input_type = tf.int8
 converter.inference_output_type = tf.int8
