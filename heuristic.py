@@ -1,4 +1,15 @@
 import math
+from collections import deque
+
+EAR_THRESHOLD = 0.20
+MAR_THRESHOLD = 0.50
+PERCLOS_THRESHOLD = 0.15  # 15% closure over the window indicates fatigue
+YAWN_FRAME_COUNT = 30  # Number of consecutive frames for a yawn (approx 1 sec at 30fps)
+
+# Sliding window
+WINDOW_SIZE = 1800 
+frame_buffer = deque(maxlen=WINDOW_SIZE)
+yawn_counter = 0
 
 # Landmark Indices
 RIGHT_EYE = [33, 160, 158, 133, 153, 144] 
@@ -96,4 +107,26 @@ def analyze_fatigue(face_landmarks, frame_width, frame_height):
     smooth_ear = ear_filter.update(raw_avg_ear)
     smooth_mar = mar_filter.update(raw_mar)
 
-    return smooth_ear, smooth_mar
+    if smooth_ear < EAR_THRESHOLD:
+        is_closed = 1
+    else:
+        is_closed = 0
+    frame_buffer.append(is_closed)
+
+    if len(frame_buffer) > 0:
+        current_perclos = sum(frame_buffer) / len(frame_buffer)
+    else:
+        current_perclos = 0
+
+    global yawn_counter
+    is_yawning = False
+    if smooth_mar > MAR_THRESHOLD:
+        yawn_counter += 1
+        if yawn_counter >= YAWN_FRAME_COUNT:
+            is_yawning = True
+    else:
+        yawn_counter = 0
+    
+    alert_trigger = (current_perclos > PERCLOS_THRESHOLD) or is_yawning
+    
+    return smooth_ear, smooth_mar, current_perclos, alert_trigger
