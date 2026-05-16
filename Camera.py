@@ -26,6 +26,8 @@ options = vision.FaceLandmarkerOptions(
 )
 
 dl_classifier = deep_learning.FatigueClassifier(model_path='fatigue_model_quantized.tflite')
+fl32_classifier = deep_learning.Float32FatigueClassifier(model_path='fatigue_model_base.h5')
+
 def monitor_performance(func, *args):
     """Wrapper to measure execution time and peak memory."""
     tracemalloc.start()
@@ -44,7 +46,7 @@ def monitor_performance(func, *args):
 # CSV data logging setup
 csv_file = open('dms_performance_log.csv', mode='w', newline='')
 log_writer = csv.writer(csv_file)
-# Headers mapped to your methodology's evaluation criteria
+# Headers mapped to evaluation criteria
 log_writer.writerow([
     'Timestamp', 'Condition', 'Pipeline', 'Latency_ms', 
     'Peak_RAM_KB', 'EAR', 'MAR', 'PERCLOS', 'DL_Prob', 
@@ -98,14 +100,22 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
             avg_ear, mar, perclos, alert = heuristic_result
 
             # Pipeline B: DL
-            def dl_wrapper():
+            def dl_quant_wrapper():
                 inp, dbg = dl_classifier.preprocess(frame, face_landmarks)
                 if inp is not None:
                     return dl_classifier.run_inference(inp), dbg
                 return 0.0, None
             
-            (dl_result), lat_dl, mem_dl = monitor_performance(dl_wrapper)
-            fatigue_prob, debug_crop = dl_result
+            (dl_quant_result), lat_dl_quant, mem_dl_quant = monitor_performance(dl_quant_wrapper)
+            fatigue_prob_quant, debug_crop = dl_quant_wrapper()
+
+            def dl_float_wrapper():
+                inp, _ = dl_classifier.preprocess(frame, face_landmarks)
+                if inp is not None:
+                    return fl32_classifier.run_inference(inp)
+                return 0.0
+            
+            (fatigue_prob_float), lat_dl_float, mem_dl_float = monitor_performance(dl_float_wrapper)
 
             if debug_crop is not None:
                 cv2.imshow('AI Input (96x96 Gray)', debug_crop)
@@ -117,17 +127,24 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
             if (current_time_sec - last_log_time) >= logging_interval:
                 print(f"\n[{current_time}] Condition: {current_condition} | GT Fatigue: {ground_truth_fatigue}")
                 print(f"  HEURISTIC -> Latency: {lat_h:.2f}ms | Peak RAM: {mem_h:.2f}KB | Alert: {alert}")
-                print(f"  DEEP LRN  -> Latency: {lat_dl:.2f}ms | Peak RAM: {mem_dl:.2f}KB | Prob: {fatigue_prob:.2%}")
-
+                #print(f"  DEEP LRN  -> Latency: {lat_dl:.2f}ms | Peak RAM: {mem_dl:.2f}KB | Prob: {fatigue_prob:.2%}")
+                print(f"  FLOAT32 DL -> Prob: {fatigue_prob_float:.2%} | Latency: {lat_dl_float:.2f}ms")
+                print(f"  INT8 TFLITE -> Prob: {fatigue_prob_quant:.2%} | Latency: {lat_dl_quant:.2f}ms")
+                                                                                    
                 log_writer.writerow([
                     current_time, current_condition, 'Heuristic', round(lat_h, 2), 
                     round(mem_h, 2), round(avg_ear, 3), round(mar, 3), round(perclos, 3), 
                     '', alert, ground_truth_fatigue
                 ])
                 log_writer.writerow([
-                    current_time, current_condition, 'Deep_Learning', round(lat_dl, 2), 
-                    round(mem_dl, 2), '', '', '', round(fatigue_prob, 3), 
-                    fatigue_prob > 0.8, ground_truth_fatigue
+                    current_time, current_condition, 'DL_quant', round(lat_dl_quant, 2), 
+                    round(mem_dl_quant, 2), '', '', '', round(fatigue_prob_quant, 3), 
+                    fatigue_prob_quant > 0.8, ground_truth_fatigue
+                ])
+                log_writer.writerow([
+                    current_time, current_condition, 'DL_float', round(lat_dl_float, 2), 
+                    round(mem_dl_float, 2), '', '', '', round(fatigue_prob_float, 3), 
+                    fatigue_prob_float > 0.8, ground_truth_fatigue
                 ])
                 last_log_time = current_time_sec
 
@@ -146,8 +163,11 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
             cv2.putText(frame, status_text, (30, 190), cv2.FONT_HERSHEY_SIMPLEX, 1, status_color, 3)
 
             # DL
-            color = (0, 0, 255) if fatigue_prob > 0.8 else (255, 255, 0)
-            cv2.putText(frame, f"DL-Fatigue: {fatigue_prob:.2%}", (360, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
+            color = (0, 0, 255) if fatigue_prob_quant > 0.8 else (255, 255, 0)
+            cv2.putText(frame, f"DL-Quant: {fatigue_prob_quant:.2%}", (360, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
+
+            color = (0, 0, 255) if fatigue_prob_float > 0.8 else (255, 255, 0)
+            cv2.putText(frame, f"DL-Float: {fatigue_prob_float:.2%}", (360, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
 
         cv2.imshow('DMS Prototyping - Press ESC to exit', frame)
 

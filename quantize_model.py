@@ -59,3 +59,5 @@ c_model = hex_to_c_array(tflite_model_binary, "g_fatigue_model_data")
 with open('fatigue_model_data.cc', 'w') as f:
     f.write('#include "fatigue_model_data.h"\n\n')
     f.write(c_model)
+
+print("Saved C model")
