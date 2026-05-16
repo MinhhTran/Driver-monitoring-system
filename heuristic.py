@@ -7,14 +7,14 @@ PERCLOS_THRESHOLD = 0.15  # 15% closure over the window indicates fatigue
 YAWN_FRAME_COUNT = 30  # Number of consecutive frames for a yawn (approx 1 sec at 30fps)
 
 # Sliding window
-WINDOW_SIZE = 1800 
+WINDOW_SIZE = 1800
 frame_buffer = deque(maxlen=WINDOW_SIZE)
 yawn_counter = 0
 
 # Landmark Indices
-RIGHT_EYE = [33, 160, 158, 133, 153, 144] 
+RIGHT_EYE = [33, 160, 158, 133, 153, 144]
 LEFT_EYE = [362, 385, 387, 263, 373, 380]
-MOUTH = [78, 308, 13, 14] 
+MOUTH = [78, 308, 13, 14]
 
 class SimpleKalmanFilter:
     def __init__(self, process_noise, measurement_noise, estimation_error, initial_value=0.0):
