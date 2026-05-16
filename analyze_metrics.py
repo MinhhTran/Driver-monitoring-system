@@ -29,7 +29,7 @@ def calculate_metrics(df):
 
 # Load the logged data
 try:
-    data = pd.read_csv('dms_performance_log(2).csv')
+    data = pd.read_csv('dms_performance_log.csv')
     print("\n" + "="*50)
     print(" DMS PIPELINE PERFORMANCE ANALYSIS ")
     print("="*50)
@@ -40,8 +40,8 @@ try:
     # Print the beautifully formatted table directly to the terminal
     print(results.to_string())
     print("="*50 + "\n")
-    results.to_csv('dms_final_analysis(2).csv')
-    print("Analysis saved to 'dms_final_analysis(2).csv'")
+    results.to_csv('dms_final_analysis.csv')
+    print("Analysis saved to 'dms_final_analysis.csv'")
 
 except FileNotFoundError:
     print("Error: 'dms_performance_log.csv' not found. Please run the Camera script first.")

@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
-model = tf.keras.models.load_model('fatigue_model_base(2).h5')
+model = tf.keras.models.load_model('fatigue_model_base.h5')
 DATASET_DIR = 'dataset/train'
 
 # batch_size = 1 => yield one image at a time.
@@ -32,7 +32,7 @@ converter.inference_input_type = tf.int8
 converter.inference_output_type = tf.int8
 
 tflite_model = converter.convert()
-with open('fatigue_model_quantized(2).tflite', 'wb') as f:
+with open('fatigue_model_quantized.tflite', 'wb') as f:
     f.write(tflite_model)
 
 print("Quantization complete")
@@ -49,13 +49,13 @@ def hex_to_c_array(hex_data, var_name):
     return c_str
 
 # Read the converted tflite model
-with open('fatigue_model_quantized(2).tflite', 'rb') as f:
+with open('fatigue_model_quantized.tflite', 'rb') as f:
     tflite_model_binary = f.read()
 
 # Generate the C code
-c_model = hex_to_c_array(tflite_model_binary, "g_fatigue_model_data(2)")
+c_model = hex_to_c_array(tflite_model_binary, "g_fatigue_model_data")
 
 # Save as a .cc or .h file for your ESP-IDF/Arduino project
-with open('fatigue_model_data(2).cc', 'w') as f:
-    f.write('#include "fatigue_model_data(2).h"\n\n')
+with open('fatigue_model_data.cc', 'w') as f:
+    f.write('#include "fatigue_model_data.h"\n\n')
     f.write(c_model)

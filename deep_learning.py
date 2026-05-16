@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 
 class FatigueClassifier:
-    def __init__(self, model_path='fatigue_model_quantized(2).tflite'):
+    def __init__(self, model_path='fatigue_model_quantized.tflite'):
         """
         Initializes the TFLite interpreter for inference.
         This simulates the TFLite Micro environment on the ESP32-S3.

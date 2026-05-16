@@ -68,5 +68,5 @@ history = model.fit(
     epochs=EPOCHS
 )
 
-model.save('fatigue_model_base(2).h5')
-print("Model saved as 'fatigue_model_base(2).h5'")
+model.save('fatigue_model_base.h5')
+print("Model saved as 'fatigue_model_base.h5'")
