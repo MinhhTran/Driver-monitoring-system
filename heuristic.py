@@ -74,7 +74,7 @@ def calculate_mar(landmarks, mouth_indices):
     p_left, p_right, p_top, p_bottom = [landmarks[i] for i in mouth_indices]
     vertical = euclidean_distance(p_top, p_bottom)
     horizontal = euclidean_distance(p_left, p_right)
-    return vertical / horizontal
+    return vertical / (2 * horizontal)
 
 def analyze_fatigue(face_landmarks, frame_width, frame_height):
     """

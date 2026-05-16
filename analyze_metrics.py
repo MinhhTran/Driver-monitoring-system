@@ -2,7 +2,6 @@ import pandas as pd
 
 def calculate_metrics(df):
     """Calculates accuracy, true positive rate, and false positive rate."""
-    # Convert string booleans to actual booleans if necessary
     df['System_Alert'] = df['System_Alert'].astype(str).str.lower() == 'true'
     df['Ground_Truth_Fatigue'] = df['Ground_Truth_Fatigue'].astype(str).str.lower() == 'true'
 
@@ -30,8 +29,7 @@ def calculate_metrics(df):
 
 # Load the logged data
 try:
-    data = pd.read_csv('dms_performance_log.csv')
-    
+    data = pd.read_csv('dms_performance_log(2).csv')
     print("\n" + "="*50)
     print(" DMS PIPELINE PERFORMANCE ANALYSIS ")
     print("="*50)
@@ -42,10 +40,8 @@ try:
     # Print the beautifully formatted table directly to the terminal
     print(results.to_string())
     print("="*50 + "\n")
-
-    # Optionally, save this grouped analysis to a new CSV for easy importing into spreadsheets
-    results.to_csv('dms_final_analysis.csv')
-    print("Analysis saved to 'dms_final_analysis.csv'")
+    results.to_csv('dms_final_analysis(2).csv')
+    print("Analysis saved to 'dms_final_analysis(2).csv'")
 
 except FileNotFoundError:
     print("Error: 'dms_performance_log.csv' not found. Please run the Camera script first.")

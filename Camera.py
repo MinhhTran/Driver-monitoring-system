@@ -25,7 +25,7 @@ options = vision.FaceLandmarkerOptions(
     num_faces=1,
 )
 
-dl_classifier = deep_learning.FatigueClassifier(model_path='fatigue_model_quantized.tflite')
+dl_classifier = deep_learning.FatigueClassifier(model_path='fatigue_model_quantized(2).tflite')
 def monitor_performance(func, *args):
     """Wrapper to measure execution time and peak memory."""
     tracemalloc.start()
@@ -42,7 +42,7 @@ def monitor_performance(func, *args):
     return result, latency_ms, peak_kb
 
 # CSV data logging setup
-csv_file = open('dms_performance_log.csv', mode='w', newline='')
+csv_file = open('dms_performance_log(2).csv', mode='w', newline='')
 log_writer = csv.writer(csv_file)
 # Headers mapped to your methodology's evaluation criteria
 log_writer.writerow([
@@ -95,7 +95,7 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
             (heuristic_result), lat_h, mem_h = monitor_performance(
                 heuristic.analyze_fatigue, face_landmarks, w, h
             )
-            avg_ear, mar, perclos, alert = heuristic.analyze_fatigue(face_landmarks, w, h)
+            avg_ear, mar, perclos, alert = heuristic_result
 
             # Pipeline B: DL
             def dl_wrapper():

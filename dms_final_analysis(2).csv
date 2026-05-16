@@ -1,0 +1,3 @@
+Condition,Pipeline,Samples,Accuracy (%),TPR (%),FPR (%),Avg Latency (ms),Avg RAM (KB)
+Baseline,Deep_Learning,2094.0,71.2,20.45,7.15,1.69,148.68
+Baseline,Heuristic,2094.0,53.1,65.81,52.32,0.11,1.02
