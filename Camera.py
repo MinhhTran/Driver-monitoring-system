@@ -26,7 +26,7 @@ options = vision.FaceLandmarkerOptions(
 )
 
 dl_classifier = deep_learning.FatigueClassifier(model_path='fatigue_model_quantized.tflite')
-fl32_classifier = deep_learning.Float32FatigueClassifier(model_path='fatigue_model_base.h5')
+#fl32_classifier = deep_learning.Float32FatigueClassifier(model_path='fatigue_model_base.h5')
 
 def monitor_performance(func, *args):
     """Wrapper to measure execution time and peak memory."""
@@ -109,13 +109,13 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
             (dl_quant_result), lat_dl_quant, mem_dl_quant = monitor_performance(dl_quant_wrapper)
             fatigue_prob_quant, debug_crop = dl_quant_wrapper()
 
-            def dl_float_wrapper():
-                inp, _ = dl_classifier.preprocess(frame, face_landmarks)
-                if inp is not None:
-                    return fl32_classifier.run_inference(inp)
-                return 0.0
+            #def dl_float_wrapper():
+            #    inp, _ = dl_classifier.preprocess(frame, face_landmarks)
+            #    if inp is not None:
+            #        return fl32_classifier.run_inference(inp)
+            #    return 0.0
             
-            (fatigue_prob_float), lat_dl_float, mem_dl_float = monitor_performance(dl_float_wrapper)
+            #(fatigue_prob_float), lat_dl_float, mem_dl_float = monitor_performance(dl_float_wrapper)
 
             if debug_crop is not None:
                 cv2.imshow('AI Input (96x96 Gray)', debug_crop)
@@ -128,7 +128,7 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
                 print(f"\n[{current_time}] Condition: {current_condition} | GT Fatigue: {ground_truth_fatigue}")
                 print(f"  HEURISTIC -> Latency: {lat_h:.2f}ms | Peak RAM: {mem_h:.2f}KB | Alert: {alert}")
                 #print(f"  DEEP LRN  -> Latency: {lat_dl:.2f}ms | Peak RAM: {mem_dl:.2f}KB | Prob: {fatigue_prob:.2%}")
-                print(f"  FLOAT32 DL -> Prob: {fatigue_prob_float:.2%} | Latency: {lat_dl_float:.2f}ms")
+                #print(f"  FLOAT32 DL -> Prob: {fatigue_prob_float:.2%} | Latency: {lat_dl_float:.2f}ms")
                 print(f"  INT8 TFLITE -> Prob: {fatigue_prob_quant:.2%} | Latency: {lat_dl_quant:.2f}ms")
                                                                                     
                 log_writer.writerow([
@@ -141,11 +141,11 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
                     round(mem_dl_quant, 2), '', '', '', round(fatigue_prob_quant, 3), 
                     fatigue_prob_quant > 0.8, ground_truth_fatigue
                 ])
-                log_writer.writerow([
-                    current_time, current_condition, 'DL_float', round(lat_dl_float, 2), 
-                    round(mem_dl_float, 2), '', '', '', round(fatigue_prob_float, 3), 
-                    fatigue_prob_float > 0.8, ground_truth_fatigue
-                ])
+                #log_writer.writerow([
+                #    current_time, current_condition, 'DL_float', round(lat_dl_float, 2), 
+                #    round(mem_dl_float, 2), '', '', '', round(fatigue_prob_float, 3), 
+                #    fatigue_prob_float > 0.8, ground_truth_fatigue
+                #])
                 last_log_time = current_time_sec
 
             # Condition and ground truth
@@ -166,8 +166,8 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
             color = (0, 0, 255) if fatigue_prob_quant > 0.8 else (255, 255, 0)
             cv2.putText(frame, f"DL-Quant: {fatigue_prob_quant:.2%}", (360, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
 
-            color = (0, 0, 255) if fatigue_prob_float > 0.8 else (255, 255, 0)
-            cv2.putText(frame, f"DL-Float: {fatigue_prob_float:.2%}", (360, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
+            #color = (0, 0, 255) if fatigue_prob_float > 0.8 else (255, 255, 0)
+            #cv2.putText(frame, f"DL-Float: {fatigue_prob_float:.2%}", (360, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
 
         cv2.imshow('DMS Prototyping - Press ESC to exit', frame)
 

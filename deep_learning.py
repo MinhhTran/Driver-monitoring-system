@@ -38,19 +38,19 @@ class FatigueClassifier:
         
         # 1. Crop
         roi = frame[y_min:y_max, x_min:x_max]
-        
         if roi.size == 0:
-            return None
+            return None, None
 
         # 2. Grayscale conversion (reduces memory from 3 channels to 1)
         gray_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+        rgb_tricked_roi = cv2.cvtColor(gray_roi, cv2.COLOR_GRAY2RGB)
         
         # 3. Downsample to 96x96 (matches hardware latency solution)
-        resized_roi = cv2.resize(gray_roi, (96, 96))
+        resized_roi = cv2.resize(rgb_tricked_roi, (96, 96))
         
         # 4. Normalize and add batch/channel dimensions (1, 96, 96, 3)
         normalized_roi = resized_roi.astype(np.float32) / 255.0
-        final_input = np.expand_dims(np.expand_dims(normalized_roi, axis=0), axis=-1)
+        final_input = np.expand_dims(normalized_roi, axis=0)
         
         return final_input, resized_roi
 
@@ -82,14 +82,14 @@ class FatigueClassifier:
 
         return prediction[0][0]
 
-class Float32FatigueClassifier:
-    def __init__(self, model_path='fatigue_model_base.h5'):
-        self.model = tf.keras.models.load_model(model_path)
+#class Float32FatigueClassifier:
+#    def __init__(self, model_path='fatigue_model_base.h5'):
+#        self.model = tf.keras.models.load_model(model_path)
 
-    def run_inference(self, input_data):
-        # Directly outputs floating point probabilities
-        prediction = self.model(input_data, training=False)
-        return prediction.numpy()[0][0]
+#    def run_inference(self, input_data):
+#        # Directly outputs floating point probabilities
+#        prediction = self.model(input_data, training=False)
+#        return prediction.numpy()[0][0]
     
 def process_pipeline_b(frame, face_landmarks):
     """

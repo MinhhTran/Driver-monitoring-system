@@ -7,7 +7,7 @@ DATASET_DIR = 'dataset/train'
 # batch_size = 1 => yield one image at a time.
 calib_ds = tf.keras.utils.image_dataset_from_directory(
     DATASET_DIR,
-    color_mode="grayscale",
+    color_mode="rgb",
     image_size=(96, 96),
     batch_size=1,
     shuffle=True
