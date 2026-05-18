@@ -3,3 +3,5 @@ tf_env/
 __pycache__/
 *.pyc
 dataset/
+nthu/
+nthu_patched/

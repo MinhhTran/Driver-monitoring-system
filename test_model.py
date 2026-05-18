@@ -5,7 +5,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 # --- Configuration ---
 MODEL_PATH = 'fatigue_model_quantized.tflite'
-TEST_DIR = 'dataset/test'
+TEST_DIR = 'nthu_patched/test'
 IMG_HEIGHT = 96
 IMG_WIDTH = 96
 

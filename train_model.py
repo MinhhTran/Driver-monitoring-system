@@ -5,7 +5,7 @@ import os
 IMG_HEIGHT = 96
 IMG_WIDTH = 96
 BATCH_SIZE = 32
-DATASET_DIR = 'dataset/train'
+DATASET_DIR = 'nthu_patched/train'
 
 # Load dataset
 train_ds = tf.keras.utils.image_dataset_from_directory(
@@ -34,7 +34,7 @@ val_ds = val_ds.map(lambda x, y: (normalization_layer(x), y))
 
 print("Building MobileNetV2 architecture...")
 data_augmentation = tf.keras.Sequential([
-  tf.keras.layers.RandomRotation(0.1, input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
+  #tf.keras.layers.RandomRotation(0.1, input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
   tf.keras.layers.RandomZoom(0.1),
   tf.keras.layers.RandomTranslation(0.1, 0.1),
 ])
@@ -69,7 +69,7 @@ model.compile(
 )
 
 print("Starting training...")
-EPOCHS = 36
+EPOCHS = 50
 
 early_stopping = tf.keras.callbacks.EarlyStopping(
     monitor='val_loss', 

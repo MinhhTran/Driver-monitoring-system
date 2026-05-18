@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 
 model = tf.keras.models.load_model('fatigue_model_base.h5')
-DATASET_DIR = 'dataset/train'
+DATASET_DIR = 'nthu_patched/train'
 
 # batch_size = 1 => yield one image at a time.
 calib_ds = tf.keras.utils.image_dataset_from_directory(
