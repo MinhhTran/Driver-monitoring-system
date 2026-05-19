@@ -164,10 +164,10 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
             last_log_time = current_time_sec
 
             # Condition and ground truth
-            cv2.putText(frame, f"Cond: {current_condition}", (360, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+            cv2.putText(frame, f"Cond: {current_condition}", (360, 230), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
             gt_text = "GT: FATIGUE" if ground_truth_fatigue else "GT: AWAKE"
             gt_color = (0, 0, 255) if ground_truth_fatigue else (0, 255, 0)
-            cv2.putText(frame, gt_text, (360, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.6, gt_color, 2)
+            cv2.putText(frame, gt_text, (360, 290), cv2.FONT_HERSHEY_SIMPLEX, 0.6, gt_color, 2)
 
             # Heuristic
             status_text = "FATIGUE!" if alert else "NORMAL"
@@ -180,7 +180,7 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
             # DL
             dl_status_text = "FATIGUE" if dl_alert else "NORMAL"
             dl_color = (0, 0, 255) if dl_alert else (255, 255, 0)
-            cv2.putText(frame, f"DL-Quant Prob: {fatigue_prob_quant:.2%}", (360, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, dl_color, 2)
+            cv2.putText(frame, f"DL Prob: {fatigue_prob_quant:.2%}", (360, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, dl_color, 2)
             cv2.putText(frame, f"DL Frames: {dl_fatigue_counter}/{DL_CONSECUTIVE_FRAMES}", (360, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.6, dl_color, 2)
             cv2.putText(frame, dl_status_text, (360, 110), cv2.FONT_HERSHEY_SIMPLEX, 0.8, dl_color, 2)
 
