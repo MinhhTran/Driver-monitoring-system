@@ -5,3 +5,5 @@ __pycache__/
 dataset/
 nthu/
 nthu_patched/
+nthu_patched_2/
+nthu_cleaned/

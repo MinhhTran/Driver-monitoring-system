@@ -58,6 +58,11 @@ current_condition = "Baseline"
 ground_truth_fatigue = False
 #logging_interval = 0.05 # 0.5 means 2 logs per second)
 last_log_time = 0
+# Dl debouncing variables
+dl_fatigue_counter = 0
+DL_PROB_THRESHOLD = 0.80      # 80% confidence required per frame
+DL_CONSECUTIVE_FRAMES = 7    # Number of frames to confirm a micro-sleep
+dl_alert = False              # Final alert trigger
 
 # 2. MAIN CAMERA LOOP
 with vision.FaceLandmarker.create_from_options(options) as landmarker:
@@ -120,6 +125,16 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
             if debug_crop is not None:
                 cv2.imshow('AI Input (96x96 Gray)', debug_crop)
 
+            if fatigue_prob_quant > DL_PROB_THRESHOLD:
+                dl_fatigue_counter += 1
+            else:
+                dl_fatigue_counter = 0
+
+            if dl_fatigue_counter >= DL_CONSECUTIVE_FRAMES:
+                dl_alert = True
+            else:
+                dl_alert = False
+
             # 3. Result
             current_time = time.strftime('%H:%M:%S')
             current_time_sec = time.time()
@@ -155,7 +170,7 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
             cv2.putText(frame, gt_text, (360, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.6, gt_color, 2)
 
             # Heuristic
-            status_text = "FATIGUE DETECTED!" if alert else "NORMAL"
+            status_text = "FATIGUE!" if alert else "NORMAL"
             status_color = (0, 0, 255) if alert else (0, 255, 0)
             cv2.putText(frame, f"EAR: {avg_ear:.2f}", (30, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
             cv2.putText(frame, f"MAR: {mar:.2f}", (30, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
@@ -163,8 +178,11 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
             cv2.putText(frame, status_text, (30, 190), cv2.FONT_HERSHEY_SIMPLEX, 1, status_color, 3)
 
             # DL
-            color = (0, 0, 255) if fatigue_prob_quant > 0.8 else (255, 255, 0)
-            cv2.putText(frame, f"DL-Quant: {fatigue_prob_quant:.2%}", (360, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
+            dl_status_text = "FATIGUE" if dl_alert else "NORMAL"
+            dl_color = (0, 0, 255) if dl_alert else (255, 255, 0)
+            cv2.putText(frame, f"DL-Quant Prob: {fatigue_prob_quant:.2%}", (360, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, dl_color, 2)
+            cv2.putText(frame, f"DL Frames: {dl_fatigue_counter}/{DL_CONSECUTIVE_FRAMES}", (360, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.6, dl_color, 2)
+            cv2.putText(frame, dl_status_text, (360, 110), cv2.FONT_HERSHEY_SIMPLEX, 0.8, dl_color, 2)
 
             #color = (0, 0, 255) if fatigue_prob_float > 0.8 else (255, 255, 0)
             #cv2.putText(frame, f"DL-Float: {fatigue_prob_float:.2%}", (360, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
