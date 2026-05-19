@@ -5,7 +5,7 @@ import os
 IMG_HEIGHT = 96
 IMG_WIDTH = 96
 BATCH_SIZE = 32
-DATASET_DIR = 'nthu_patched/train'
+DATASET_DIR = 'nthu_patched_2/train'
 
 # Load dataset
 train_ds = tf.keras.utils.image_dataset_from_directory(

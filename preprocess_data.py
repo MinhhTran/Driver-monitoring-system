@@ -106,9 +106,9 @@ class TasksDatasetPreprocessor:
                     path_str = str(input_path).lower()
                     
                     # Sort structural branches into proper labels
-                    if 'notdrowsy' in path_str:
+                    if 'awake' in path_str:
                         target_class = 'awake'
-                    elif 'drowsy' in path_str:
+                    elif 'fatigue' in path_str:
                         target_class = 'fatigue'
                     else:
                         continue 
@@ -140,8 +140,8 @@ class TasksDatasetPreprocessor:
 
 if __name__ == "__main__":
     # Point directly to your raw data path structure
-    RAW_DATASET_DIR = "nthu/train"
-    COMPOSITE_DATASET_DIR = "nthu_patched/train"
+    RAW_DATASET_DIR = "nthu_cleaned/train"
+    COMPOSITE_DATASET_DIR = "nthu_patched_2/train"
     
     preprocessor = TasksDatasetPreprocessor(
         input_dir=RAW_DATASET_DIR, 
