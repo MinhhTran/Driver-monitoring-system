@@ -1,3 +1,12 @@
-idf_component_register(SRCS "main.cpp"
-                            "heuristic.cpp"
-                          INCLUDE_DIRS ".")
+idf_component_register(
+    SRCS 
+        "camera.cpp" 
+        "heuristic.cpp" 
+        "deep_learning.cpp"
+        "fatigue_model_data.h"
+    INCLUDE_DIRS 
+        "."
+    REQUIRES 
+        esp_camera
+        esp-tflite-micro
+)

@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "name": "ESP-IDF",
+            "includePath": [
+                "${workspaceFolder}/main",
+                "${workspaceFolder}/components/**",
+                "${workspaceFolder}/build/config",
+                "/root/.espressif/tools/xtensa-esp32s3-elf/**",
+                "/root/esp/esp-idf/components/**"
+            ],
+            "defines": [
+                "ESP_PLATFORM",
+                "IDF_VER=\"5.x\""
+            ],
+            "compilerPath": "/root/.espressif/tools/xtensa-esp32s3-elf/esp-12.2.0_20250801/xtensa-esp32s3-elf/bin/xtensa-esp32s3-elf-gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-arm"
+        }
+    ],
+    "version": 4
+}
