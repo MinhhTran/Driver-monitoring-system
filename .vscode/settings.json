@@ -1,4 +1,6 @@
 {
-    "python-envs.defaultEnvManager": "ms-python.python:venv",
-    "git.ignoreLimitWarning": true
+  "python-envs.defaultEnvManager": "ms-python.python:venv",
+  "git.ignoreLimitWarning": true,
+  "idf.customExtraVars": {},
+  "idf.currentSetup": "/root/.espressif/v6.0.1/esp-idf",
 }
