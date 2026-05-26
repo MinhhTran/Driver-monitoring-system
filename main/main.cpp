@@ -7,7 +7,6 @@
 #include "freertos/task.h"
 #include "esp_system.h"
 
-// Include your custom pipelines
 #include "heuristic.h"
 #include "deep_learning.h"
 
@@ -66,13 +65,12 @@ static esp_err_t init_camera() {
     config.pin_pwdn = PWDN_GPIO_NUM;
     config.pin_reset = RESET_GPIO_NUM;
     config.xclk_freq_hz = 20000000;
-    
-    // Use RGB565 or RGB888 depending on your ESP-WHO MTMN requirements
-    config.pixel_format = PIXFORMAT_RGB888; 
+    config.pixel_format = PIXFORMAT_RGB565; 
     config.frame_size = FRAMESIZE_QVGA; // 320x240
     config.jpeg_quality = 12;
     config.fb_count = 2; // Requires PSRAM
     config.grab_mode = CAMERA_GRAB_LATEST;
+    config.fb_location = CAMERA_FB_IN_PSRAM;
 
     esp_err_t err = esp_camera_init(&config);
     if (err != ESP_OK) {
