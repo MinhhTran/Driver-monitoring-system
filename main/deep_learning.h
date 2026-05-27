@@ -50,7 +50,7 @@ private:
     TfLiteTensor* output_tensor_ = nullptr;
 
     // Tensor Arena allocation sizing for Quantized MobileNet
-    static constexpr int kTensorArenaSize = 128 * 1024; 
+    static constexpr int kTensorArenaSize = 240 * 1024; 
     uint8_t tensor_arena_[kTensorArenaSize];
 };
 
