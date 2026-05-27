@@ -171,7 +171,7 @@ extern "C" void app_main(void) {
     BaseType_t task_status = xTaskCreatePinnedToCore(
         dms_task, 
         "DMS_Task", 
-        4096 * 4, // 32KB Stack size, adjust if MTMN needs more
+        4096 * 4, // 16KB Stack size, adjust if MTMN needs more
         NULL, 
         5, 
         NULL, 
