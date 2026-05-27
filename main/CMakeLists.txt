@@ -12,4 +12,5 @@ idf_component_register(
         freertos
         driver
         esp_timer
+        espressif__esp-dl
 )

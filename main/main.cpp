@@ -6,7 +6,10 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_system.h"
-
+#include "img_converters.h"
+#include "dl_image.hpp"
+#include "human_face_detect_msr01.hpp"
+#include "human_face_detect_mnp01.hpp"
 #include "heuristic.h"
 #include "deep_learning.h"
 
@@ -83,6 +86,7 @@ static esp_err_t init_camera() {
 // ==========================================
 // Main Execution Loop
 // ==========================================
+dl::detect::HumanFaceDetectMSR01 face_detector(0.3F, 0.3F, 1, 0.3F);
 void dms_task(void *pvParameters) {
     ESP_LOGI(TAG, "DMS Task Started");
     while (true) {
@@ -95,27 +99,58 @@ void dms_task(void *pvParameters) {
         }
         ESP_LOGI(TAG, "Frame captured! Resolution: %dx%d, Size: %d bytes", fb->width, fb->height, fb->len);
 
-        // 2. FACE DETECTION & LANDMARK EXTRACTION
-        // ---------------------------------------------------------
-        // NOTE: You must insert your ESP-WHO / MTMN face detection 
-        // inference here. It should parse the `fb->buf` and return 
-        // the 468 (or subset) facial landmarks.
-        // ---------------------------------------------------------
-        std::vector<Point> heuristic_landmarks; // Populate via MTMN
-        std::vector<LandmarkPoint> dl_landmarks; // Populate via MTMN
-        bool face_detected = true; // Set to true if MTMN finds a face
+        uint8_t *rgb888_buf = (uint8_t *)malloc(fb->width * fb->height * 3);
+        bool face_detected = false;
+        MTMNFace detected_face;
 
-        if (face_detected && heuristic_landmarks.size() > 0) {
+        if (rgb888_buf) {
+            // Convert raw camera format (usually RGB565) to RGB888
+            fmt2rgb888(fb->buf, fb->len, fb->format, rgb888_buf);
+
+            // 2. FACE DETECTION & LANDMARK EXTRACTION
+            // Run ESP-DL inference on the converted image
+            std::list<dl::detect::result_t> &results = face_detector.infer(
+                rgb888_buf, {fb->height, fb->width, 3}
+            );
+
+            if (!results.empty()) {
+                face_detected = true;
+                dl::detect::result_t best_face = results.front();
+                
+                // Populate our unified MTMNFace struct
+                // A. Absolute Bounding Box
+                detected_face.box.x_min = std::max(0, best_face.box[0]);
+                detected_face.box.y_min = std::max(0, best_face.box[1]);
+                detected_face.box.x_max = std::min((int)fb->width, best_face.box[2]);
+                detected_face.box.y_max = std::min((int)fb->height, best_face.box[3]);
+
+                // B. Normalized Keypoints (ESP-DL gives absolute, so we convert them)
+                // [0-1] Left Eye, [2-3] Right Eye, [4-5] Nose, [6-7] Left Mouth, [8-9] Right Mouth
+                detected_face.left_eye.x    = best_face.keypoint[0] / (float)fb->width;
+                detected_face.left_eye.y    = best_face.keypoint[1] / (float)fb->height;
+                detected_face.right_eye.x   = best_face.keypoint[2] / (float)fb->width;
+                detected_face.right_eye.y   = best_face.keypoint[3] / (float)fb->height;
+                detected_face.nose.x        = best_face.keypoint[4] / (float)fb->width;
+                detected_face.nose.y        = best_face.keypoint[5] / (float)fb->height;
+                detected_face.left_mouth.x  = best_face.keypoint[6] / (float)fb->width;
+                detected_face.left_mouth.y  = best_face.keypoint[7] / (float)fb->height;
+                detected_face.right_mouth.x = best_face.keypoint[8] / (float)fb->width;
+                detected_face.right_mouth.y = best_face.keypoint[9] / (float)fb->height;
+            }
+        } else {
+            ESP_LOGE(TAG, "Failed to allocate RGB888 buffer! Check SRAM availability.");
+        }
+
+        if (face_detected) {
             ESP_LOGI(TAG, "Running inference pipeline components...");
             // 3. Run Pipeline A: Heuristic (Geometric)
-            heuristic_engine.UpdateMetrics(heuristic_landmarks);
+            heuristic_engine.UpdateMetrics(rgb888_buf, fb->width, fb->height, detected_face);
             bool is_drowsy_heuristic = heuristic_engine.IsDrowsy();
             bool is_yawning = heuristic_engine.IsYawning();
 
             // 4. Run Pipeline B: Deep Learning (TFLite Micro)
             bool pack_success = dl_classifier.PreprocessAndPack(
-                fb->buf, fb->width, fb->height, 
-                dl_landmarks.data(), dl_landmarks.size()
+                rgb888_buf, fb->width, fb->height, detected_face
             );
 
             float fatigue_prob = 0.0f;
@@ -135,7 +170,11 @@ void dms_task(void *pvParameters) {
             // Turn off alerts if no face is detected to prevent false positives
             gpio_set_level(ALERT_PIN, 0);
         }
-
+        
+        // Free image buffer
+        if (rgb888_buf) {
+            free(rgb888_buf);
+        }
         // Return the frame buffer back to the camera driver
         esp_camera_fb_return(fb);
 
