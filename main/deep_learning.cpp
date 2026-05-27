@@ -18,16 +18,16 @@ bool FatigueClassifier::Init() {
         return false;
     }
 
-    // Pull in only necessary ops to minimize footprint, or use AllOpsResolver for safety
     static tflite::MicroMutableOpResolver<8> resolver;
 
     if (resolver.AddConv2D() != kTfLiteOk) return false;
     if (resolver.AddDepthwiseConv2D() != kTfLiteOk) return false;
-    if (resolver.AddReshape() != kTfLiteOk) return false;
+    //if (resolver.AddReshape() != kTfLiteOk) return false;
     if (resolver.AddFullyConnected() != kTfLiteOk) return false; // Dense layer
     if (resolver.AddLogistic() != kTfLiteOk)       return false; // Sigmoid activation
     if (resolver.AddAveragePool2D() != kTfLiteOk)  return false; // Global Average Pooling
     if (resolver.AddAdd() != kTfLiteOk)            return false; // Residual connections
+    if (resolver.AddMean() != kTfLiteOk)           return false;
     
     // Build the structural Micro Interpreter
     static tflite::MicroInterpreter static_interpreter(

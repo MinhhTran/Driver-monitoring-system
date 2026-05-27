@@ -50,8 +50,7 @@ private:
     TfLiteTensor* output_tensor_ = nullptr;
 
     // Tensor Arena allocation sizing for Quantized MobileNet
-    // Sized carefully for ESP32-S3 internal SRAM budgets
-    static constexpr int kTensorArenaSize = 65 * 1024; 
+    static constexpr int kTensorArenaSize = 128 * 1024; 
     uint8_t tensor_arena_[kTensorArenaSize];
 };
 
