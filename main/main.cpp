@@ -85,7 +85,6 @@ static esp_err_t init_camera() {
 // ==========================================
 void dms_task(void *pvParameters) {
     ESP_LOGI(TAG, "DMS Task Started");
-
     while (true) {
         // 1. Capture Camera Frame
         camera_fb_t *fb = esp_camera_fb_get();
@@ -169,13 +168,19 @@ extern "C" void app_main(void) {
     ESP_LOGI(TAG, "TFLite Micro loaded successfully.");
 
     // Pin the DMS task to Core 1 (Core 0 handles Wi-Fi/System by default)
-    xTaskCreatePinnedToCore(
+    BaseType_t task_status = xTaskCreatePinnedToCore(
         dms_task, 
         "DMS_Task", 
-        8192 * 4, // 32KB Stack size, adjust if MTMN needs more
+        4096 * 4, // 32KB Stack size, adjust if MTMN needs more
         NULL, 
         5, 
         NULL, 
         1 // Core 1
     );
+
+    if (task_status != pdPASS) {
+        ESP_LOGE(TAG, "DMS Task Creation Failed! Error Code: %d (Out of SRAM Heap)", task_status);
+    } else {
+        ESP_LOGI(TAG, "DMS Task Successfully Spawned.");
+    }
 }
