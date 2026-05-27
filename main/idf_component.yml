@@ -1,4 +1,4 @@
 dependencies:
   espressif/esp-tflite-micro: ^1.0.0
   espressif/esp32-camera: '*'
-  espressif/esp-dl: '*'
+  espressif/esp-dl: ^1.0.0

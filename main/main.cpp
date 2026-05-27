@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <vector>
+#include <list>
+#include <inttypes.h>
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "esp_camera.h"
@@ -86,7 +88,7 @@ static esp_err_t init_camera() {
 // ==========================================
 // Main Execution Loop
 // ==========================================
-dl::detect::HumanFaceDetectMSR01 face_detector(0.3F, 0.3F, 1, 0.3F);
+HumanFaceDetectMSR01 face_detector(0.3F, 0.3F, 1, 0.3F);
 void dms_task(void *pvParameters) {
     ESP_LOGI(TAG, "DMS Task Started");
     while (true) {
@@ -97,7 +99,7 @@ void dms_task(void *pvParameters) {
             vTaskDelay(pdMS_TO_TICKS(100));
             continue;
         }
-        ESP_LOGI(TAG, "Frame captured! Resolution: %dx%d, Size: %d bytes", fb->width, fb->height, fb->len);
+        ESP_LOGI(TAG, "Frame captured! Resolution: %dx%d, Size: %zu bytes", fb->width, fb->height, fb->len);
 
         uint8_t *rgb888_buf = (uint8_t *)malloc(fb->width * fb->height * 3);
         bool face_detected = false;
@@ -109,10 +111,10 @@ void dms_task(void *pvParameters) {
 
             // 2. FACE DETECTION & LANDMARK EXTRACTION
             // Run ESP-DL inference on the converted image
-            std::list<dl::detect::result_t> &results = face_detector.infer(
-                rgb888_buf, {fb->height, fb->width, 3}
-            );
-
+            //std::list<dl::detect::result_t> &results = face_detector.infer(
+            //    rgb888_buf, {fb->height, fb->width, 3}
+            //);
+            auto &results = face_detector.infer(rgb888_buf, {fb->height, fb->width, 3});
             if (!results.empty()) {
                 face_detected = true;
                 dl::detect::result_t best_face = results.front();
