@@ -22,24 +22,31 @@ struct LandmarkPoint {
     float y;
 };
 
+struct MTMNFace {
+    BBox box; // the entire face bounding box
+    LandmarkPoint left_eye;
+    LandmarkPoint right_eye;
+    LandmarkPoint nose;
+    LandmarkPoint left_mouth;
+    LandmarkPoint right_mouth;
+};
+
 class FatigueClassifier {
 public:
     FatigueClassifier();
     ~FatigueClassifier() = default;
-
     bool Init();
     
     // Core preprocessing: Cuts eye/mouth patches from raw camera frame and fills tensor
     bool PreprocessAndPack(const uint8_t* frame_buffer, int frame_w, int frame_h, 
-                           const LandmarkPoint* landmarks, int landmark_count);
-    
-    // Runs the quantized INT8 execution loop
+                           const MTMNFace& face);
+
     float RunInference();
 
 private:
-    BBox GetFeatureBBox(const LandmarkPoint* landmarks, const int* indices, 
-                        int index_count, int frame_w, int frame_h, int padding);
-                        
+    BBox GetBoxAroundCenter(LandmarkPoint center, int width, int height, 
+                            int frame_w, int frame_h);
+
     void CropAndResizePatch(const uint8_t* src_frame, int src_w, int src_h, 
                             BBox box, uint8_t* dest_patch, int dest_w, int dest_h);
 

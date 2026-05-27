@@ -48,27 +48,19 @@ bool FatigueClassifier::Init() {
     return true;
 }
 
-BBox FatigueClassifier::GetFeatureBBox(const LandmarkPoint* landmarks, const int* indices, 
-                                       int index_count, int frame_w, int frame_h, int padding) {
-    int x_min = frame_w, y_min = frame_h, x_max = 0, y_max = 0;
+BBox FatigueClassifier::GetBoxAroundCenter(LandmarkPoint center, int width, int height, 
+                                           int frame_w, int frame_h) {
+    BBox b;
+    // Convert normalized coordinates back to absolute pixel values
+    int cx = static_cast<int>(center.x * frame_w);
+    int cy = static_cast<int>(center.y * frame_h);
 
-    for (int i = 0; i < index_count; ++i) {
-        int idx = indices[i];
-        int px = static_cast<int>(landmarks[idx].x * frame_w);
-        int py = static_cast<int>(landmarks[idx].y * frame_h);
-
-        if (px < x_min) x_min = px;
-        if (px > x_max) x_max = px;
-        if (py < y_min) y_min = py;
-        if (py > y_max) y_max = py;
-    }
-
-    BBox box;
-    box.x_min = std::max(0, x_min - padding);
-    box.y_min = std::max(0, y_min - padding);
-    box.x_max = std::min(frame_w, x_max + padding);
-    box.y_max = std::min(frame_h, y_max + padding);
-    return box;
+    // Create the box and clamp to image boundaries to prevent SegFaults
+    b.x_min = std::max(0, cx - (width / 2));
+    b.y_min = std::max(0, cy - (height / 2));
+    b.x_max = std::min(frame_w, cx + (width / 2));
+    b.y_max = std::min(frame_h, cy + (height / 2));
+    return b;
 }
 
 void FatigueClassifier::CropAndResizePatch(const uint8_t* src_frame, int src_w, int src_h, 
@@ -96,14 +88,28 @@ void FatigueClassifier::CropAndResizePatch(const uint8_t* src_frame, int src_w, 
 }
 
 bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame_w, int frame_h, 
-                                          const LandmarkPoint* landmarks, int landmark_count) {
-    
-    // 1. Calculate the local targeted spatial boundaries
-    BBox r_eye_box = GetFeatureBBox(landmarks, RIGHT_EYE_INDICES, 6, frame_w, frame_h, 10);
-    BBox l_eye_box = GetFeatureBBox(landmarks, LEFT_EYE_INDICES, 6, frame_w, frame_h, 10);
-    BBox mouth_box = GetFeatureBBox(landmarks, MOUTH_INDICES, 8, frame_w, frame_h, 10);
+                                          const MTMNFace& face) {
+    // 1. Calculate dynamic feature sizes based on the detected face size
+    int face_width = face.box.x_max - face.box.x_min;
+    int face_height = face.box.y_max - face.box.y_min;
 
-    // Temp storage buffers inside stacks instead of dynamic heap pointers to prevent leaks
+    // Estimate: Eye box is ~35% of face width, Mouth is ~50% width and 30% height
+    int eye_size = static_cast<int>(face_width * 0.35f);
+    int mouth_w = static_cast<int>(face_width * 0.50f);
+    int mouth_h = static_cast<int>(face_height * 0.30f);
+
+    // 2. Generate the bounding boxes around the MTMN keypoints
+    // keypoint[0] for Left Eye and keypoint[1] for Right Eye
+    BBox l_eye_box = GetBoxAroundCenter(face.left_eye, eye_size, eye_size, frame_w, frame_h);
+    BBox r_eye_box = GetBoxAroundCenter(face.right_eye, eye_size, eye_size, frame_w, frame_h);
+
+    // For the mouth, the center is the midpoint between the left and right mouth corners
+    LandmarkPoint mouth_center;
+    mouth_center.x = (face.left_mouth.x + face.right_mouth.x) / 2.0f;
+    mouth_center.y = (face.left_mouth.y + face.right_mouth.y) / 2.0f;
+    BBox mouth_box = GetBoxAroundCenter(mouth_center, mouth_w, mouth_h, frame_w, frame_h);
+
+    // Temp storage buffers (stacks allocated)
     uint8_t r_eye_patch[48 * 48 * 3];
     uint8_t l_eye_patch[48 * 48 * 3];
     uint8_t mouth_patch[96 * 48 * 3];
