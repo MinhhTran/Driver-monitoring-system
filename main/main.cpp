@@ -93,6 +93,7 @@ void dms_task(void *pvParameters) {
             vTaskDelay(pdMS_TO_TICKS(100));
             continue;
         }
+        ESP_LOGI(TAG, "Frame captured! Resolution: %dx%d, Size: %d bytes", fb->width, fb->height, fb->len);
 
         // 2. FACE DETECTION & LANDMARK EXTRACTION
         // ---------------------------------------------------------
@@ -102,10 +103,10 @@ void dms_task(void *pvParameters) {
         // ---------------------------------------------------------
         std::vector<Point> heuristic_landmarks; // Populate via MTMN
         std::vector<LandmarkPoint> dl_landmarks; // Populate via MTMN
-        bool face_detected = false; // Set to true if MTMN finds a face
+        bool face_detected = true; // Set to true if MTMN finds a face
 
         if (face_detected && heuristic_landmarks.size() > 0) {
-            
+            ESP_LOGI(TAG, "Running inference pipeline components...");
             // 3. Run Pipeline A: Heuristic (Geometric)
             heuristic_engine.UpdateMetrics(heuristic_landmarks);
             bool is_drowsy_heuristic = heuristic_engine.IsDrowsy();
@@ -139,7 +140,7 @@ void dms_task(void *pvParameters) {
         esp_camera_fb_return(fb);
 
         // Yield to allow other FreeRTOS tasks to run
-        vTaskDelay(pdMS_TO_TICKS(10)); 
+        vTaskDelay(pdMS_TO_TICKS(30)); 
     }
 }
 
