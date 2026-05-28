@@ -3,7 +3,7 @@
 
 // Alignment attribute required for the ESP32-S3 to read arrays directly from Flash
 #if defined(__GNUC__)
-#define DATA_ALIGN_ATTRIBUTE __attribute__((aligned(4)))
+#define DATA_ALIGN_ATTRIBUTE __attribute__((aligned(16)))
 #else
 #define DATA_ALIGN_ATTRIBUTE
 #endif

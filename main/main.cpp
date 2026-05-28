@@ -103,7 +103,7 @@ void dms_task(void *pvParameters) {
         }
         //ESP_LOGI(TAG, "Frame captured! Resolution: %dx%d, Size: %zu bytes", fb->width, fb->height, fb->len);
 
-        uint8_t *rgb888_buf = (uint8_t *)malloc(fb->width * fb->height * 3);
+        uint8_t *rgb888_buf = (uint8_t *)heap_caps_malloc(fb->width * fb->height * 3, MALLOC_CAP_SPIRAM);
         bool face_detected = false;
         MTMNFace detected_face;
 
@@ -230,7 +230,7 @@ extern "C" void app_main(void) {
     }
     ESP_LOGI(TAG, "TFLite Micro loaded successfully.");
 
-    dms_task_stack = (StackType_t*)heap_caps_malloc(dms_stack_size, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    dms_task_stack = (StackType_t*)heap_caps_malloc(dms_stack_size, MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
     
     if (dms_task_stack == nullptr) {
         ESP_LOGE(TAG, "Failed to allocate 32KB DMS task stack in PSRAM!");

@@ -4,10 +4,9 @@
 #include <algorithm>
 #include <cmath>
 
-// Standard Landmark Indices used by your preprocessing script
-const int RIGHT_EYE_INDICES[] = {33, 160, 158, 133, 153, 144};
-const int LEFT_EYE_INDICES[]  = {362, 385, 387, 263, 373, 380};
-const int MOUTH_INDICES[]     = {78, 308, 13, 14, 61, 291, 0, 17};
+//const int RIGHT_EYE_INDICES[] = {33, 160, 158, 133, 153, 144};
+//const int LEFT_EYE_INDICES[]  = {362, 385, 387, 263, 373, 380};
+//const int MOUTH_INDICES[]     = {78, 308, 13, 14, 61, 291, 0, 17};
 
 FatigueClassifier::FatigueClassifier() {}
 
@@ -19,16 +18,18 @@ bool FatigueClassifier::Init() {
         return false;
     }
 
-    static tflite::MicroMutableOpResolver<8> resolver;
+    static tflite::MicroMutableOpResolver<12> resolver;
 
     if (resolver.AddConv2D() != kTfLiteOk) return false;
     if (resolver.AddDepthwiseConv2D() != kTfLiteOk) return false;
-    //if (resolver.AddReshape() != kTfLiteOk) return false;
+    if (resolver.AddReshape() != kTfLiteOk) return false;
     if (resolver.AddFullyConnected() != kTfLiteOk) return false; // Dense layer
     if (resolver.AddLogistic() != kTfLiteOk)       return false; // Sigmoid activation
     if (resolver.AddAveragePool2D() != kTfLiteOk)  return false; // Global Average Pooling
     if (resolver.AddAdd() != kTfLiteOk)            return false; // Residual connections
     if (resolver.AddMean() != kTfLiteOk)           return false;
+    if (resolver.AddRelu6() != kTfLiteOk)          return false;
+    if (resolver.AddPad() != kTfLiteOk)            return false;
     
     // Build the structural Micro Interpreter
     tensor_arena_ = (uint8_t*)heap_caps_aligned_alloc(
@@ -41,7 +42,7 @@ bool FatigueClassifier::Init() {
         MicroPrintf("FATAL: Failed to allocate Tensor Arena in PSRAM!");
         return false;
     }
-    
+
     interpreter_ = new tflite::MicroInterpreter(
         model_, resolver, tensor_arena_, kTensorArenaSize
     );
@@ -122,9 +123,9 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
     BBox mouth_box = GetBoxAroundCenter(mouth_center, mouth_w, mouth_h, frame_w, frame_h);
 
     // Temp storage buffers (stacks allocated)
-    uint8_t* r_eye_patch = (uint8_t*)malloc(48 * 48 * 3);
-    uint8_t* l_eye_patch = (uint8_t*)malloc(48 * 48 * 3);
-    uint8_t* mouth_patch = (uint8_t*)malloc(96 * 48 * 3);
+    uint8_t* r_eye_patch = (uint8_t*)heap_caps_malloc(48 * 48 * 3, MALLOC_CAP_SPIRAM);
+    uint8_t* l_eye_patch = (uint8_t*)heap_caps_malloc(48 * 48 * 3, MALLOC_CAP_SPIRAM);
+    uint8_t* mouth_patch = (uint8_t*)heap_caps_malloc(96 * 48 * 3, MALLOC_CAP_SPIRAM);
 
     if (!r_eye_patch || !l_eye_patch || !mouth_patch) {
         if (r_eye_patch) free(r_eye_patch);
@@ -173,9 +174,9 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
             tensor_input_ptr[tensor_pixel_idx + 2] = quantized_val;
         }
     }
-    free(r_eye_patch);
-    free(l_eye_patch);
-    free(mouth_patch);
+    heap_caps_free(r_eye_patch);
+    heap_caps_free(l_eye_patch);
+    heap_caps_free(mouth_patch);
     return true;
 }
 
