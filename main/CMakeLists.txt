@@ -14,3 +14,4 @@ idf_component_register(
         esp_timer
         espressif__esp-dl
 )
+target_compile_options(${COMPONENT_LIB} PRIVATE "-Wno-error=format")

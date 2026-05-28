@@ -99,7 +99,7 @@ void dms_task(void *pvParameters) {
             vTaskDelay(pdMS_TO_TICKS(100));
             continue;
         }
-        ESP_LOGI(TAG, "Frame captured! Resolution: %dx%d, Size: %zu bytes", fb->width, fb->height, fb->len);
+        //ESP_LOGI(TAG, "Frame captured! Resolution: %dx%d, Size: %zu bytes", fb->width, fb->height, fb->len);
 
         uint8_t *rgb888_buf = (uint8_t *)malloc(fb->width * fb->height * 3);
         bool face_detected = false;
@@ -114,7 +114,7 @@ void dms_task(void *pvParameters) {
             //std::list<dl::detect::result_t> &results = face_detector.infer(
             //    rgb888_buf, {fb->height, fb->width, 3}
             //);
-            auto &results = face_detector.infer(rgb888_buf, {fb->height, fb->width, 3});
+            auto &results = face_detector.infer(rgb888_buf, {(int)fb->height, (int)fb->width, 3});
             if (!results.empty()) {
                 face_detected = true;
                 dl::detect::result_t best_face = results.front();
