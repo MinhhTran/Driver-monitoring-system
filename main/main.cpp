@@ -90,6 +90,8 @@ static esp_err_t init_camera() {
 // ==========================================
 // Main Execution Loop
 // ==========================================
+#define RUN_HEURISTIC_PIPELINE
+//#define RUN_DEEP_LEARNING_PIPELINE
 HumanFaceDetectMSR01 face_detector(0.3F, 0.3F, 1, 0.3F);
 void dms_task(void *pvParameters) {
     ESP_LOGI(TAG, "DMS Task Started");
@@ -150,41 +152,60 @@ void dms_task(void *pvParameters) {
             //ESP_LOGI(TAG, "Running inference pipeline components...");
             int64_t start_time = esp_timer_get_time();
             // 3. Run Pipeline A: Heuristic (Geometric)
-            heuristic_engine.UpdateMetrics(rgb888_buf, fb->width, fb->height, detected_face);
-            bool is_drowsy_heuristic = heuristic_engine.IsDrowsy();
-            bool is_yawning = heuristic_engine.IsYawning();
+            #ifdef RUN_HEURISTIC_PIPELINE
+                heuristic_engine.UpdateMetrics(rgb888_buf, fb->width, fb->height, detected_face);
+                bool is_drowsy_heuristic = heuristic_engine.IsDrowsy();
+                bool is_yawning = heuristic_engine.IsYawning();
+
+                if (is_drowsy_heuristic || is_yawning > 0.75f) {
+                    ESP_LOGW(TAG, "FATIGUE DETECTED!");
+                    gpio_set_level(ALERT_PIN, 1); // Trigger Buzzer
+                } else {
+                    gpio_set_level(ALERT_PIN, 0); // Turn off Buzzer
+                }
+
+                int64_t end_time = esp_timer_get_time();
+                float latency_ms = (end_time - start_time) / 1000.0f;
+                size_t free_sram = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+                size_t free_psram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
+
+                ESP_LOGI(TAG, "METRICS | EAR: %.3f | MAR: %.3f | Latency: %.2f ms | Free SRAM: %zu B | Free PSRAM: %zu B",
+                     heuristic_engine.GetEAR(),
+                     heuristic_engine.GetMAR(),
+                     latency_ms,
+                     free_sram,
+                     free_psram);
+            #endif
 
             // 4. Run Pipeline B: Deep Learning (TFLite Micro)
-            bool pack_success = dl_classifier.PreprocessAndPack(
-                rgb888_buf, fb->width, fb->height, detected_face
-            );
+            #ifdef RUN_DEEP_LEARNING_PIPELINE
+                bool pack_success = dl_classifier.PreprocessAndPack(
+                    rgb888_buf, fb->width, fb->height, detected_face
+                );
 
-            float fatigue_prob = 0.0f;
-            if (pack_success) {
-                fatigue_prob = dl_classifier.RunInference();
-            }
-            
-            int64_t end_time = esp_timer_get_time();
-            float latency_ms = (end_time - start_time) / 1000.0f;
-            //size_t free_sram = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
-            //size_t free_psram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
-            uint32_t free_ram = esp_get_free_heap_size();
+                float fatigue_prob = 0.0f;
+                if (pack_success) {
+                    fatigue_prob = dl_classifier.RunInference();
+                }
 
-            printf("METRIC_LOG: %.3f, %.3f, %.3f, %.2f, %lu\n", 
-                   heuristic_engine.GetEAR(), 
-                   heuristic_engine.GetMAR(), 
-                   fatigue_prob, 
-                   latency_ms, 
-                   (unsigned long)free_ram);
+                if (fatigue_prob > 0.75f) {
+                    ESP_LOGW(TAG, "FATIGUE DETECTED! EAR/MAR threshold or ML Prob: %.2f", fatigue_prob);
+                    gpio_set_level(ALERT_PIN, 1); // Trigger Buzzer
+                } else {
+                    gpio_set_level(ALERT_PIN, 0); // Turn off Buzzer
+                }
 
-            // 5. Sensor Fusion & Alert Logic
-            // Example: Trigger alert if either pipeline detects high fatigue
-            if (is_drowsy_heuristic || is_yawning || fatigue_prob > 0.75f) {
-                ESP_LOGW(TAG, "FATIGUE DETECTED! EAR/MAR threshold or ML Prob: %.2f", fatigue_prob);
-                gpio_set_level(ALERT_PIN, 1); // Trigger Buzzer
-            } else {
-                gpio_set_level(ALERT_PIN, 0); // Turn off Buzzer
-            }
+                int64_t end_time = esp_timer_get_time();
+                float latency_ms = (end_time - start_time) / 1000.0f;
+                size_t free_sram = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+                size_t free_psram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
+
+                ESP_LOGI(TAG, "METRICS | Fatigue: %.1f%% | Latency: %.2f ms | Free SRAM: %zu B | Free PSRAM: %zu B",
+                        fatigue_prob * 100.0f,
+                        latency_ms,
+                        free_sram,
+                        free_psram);
+            #endif
         } else {
             // Turn off alerts if no face is detected to prevent false positives
             gpio_set_level(ALERT_PIN, 0);
