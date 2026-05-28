@@ -9,6 +9,8 @@
 #include "freertos/task.h"
 #include "esp_system.h"
 #include "img_converters.h"
+#include "esp_timer.h"
+#include "esp_heap_caps.h"
 #include "dl_image.hpp"
 #include "human_face_detect_msr01.hpp"
 #include "human_face_detect_mnp01.hpp"
@@ -99,7 +101,7 @@ void dms_task(void *pvParameters) {
             vTaskDelay(pdMS_TO_TICKS(100));
             continue;
         }
-        ESP_LOGI(TAG, "Frame captured! Resolution: %dx%d, Size: %zu bytes", fb->width, fb->height, fb->len);
+        //ESP_LOGI(TAG, "Frame captured! Resolution: %dx%d, Size: %zu bytes", fb->width, fb->height, fb->len);
 
         uint8_t *rgb888_buf = (uint8_t *)malloc(fb->width * fb->height * 3);
         bool face_detected = false;
@@ -115,6 +117,7 @@ void dms_task(void *pvParameters) {
             //    rgb888_buf, {fb->height, fb->width, 3}
             //);
             auto &results = face_detector.infer(rgb888_buf, {(int)fb->height, (int)fb->width, 3});
+            ESP_LOGI(TAG, "Inference complete. Faces found: %d", results.size());
             if (!results.empty()) {
                 face_detected = true;
                 dl::detect::result_t best_face = results.front();
@@ -144,7 +147,8 @@ void dms_task(void *pvParameters) {
         }
 
         if (face_detected) {
-            ESP_LOGI(TAG, "Running inference pipeline components...");
+            //ESP_LOGI(TAG, "Running inference pipeline components...");
+            int64_t start_time = esp_timer_get_time();
             // 3. Run Pipeline A: Heuristic (Geometric)
             heuristic_engine.UpdateMetrics(rgb888_buf, fb->width, fb->height, detected_face);
             bool is_drowsy_heuristic = heuristic_engine.IsDrowsy();
@@ -159,6 +163,19 @@ void dms_task(void *pvParameters) {
             if (pack_success) {
                 fatigue_prob = dl_classifier.RunInference();
             }
+            
+            int64_t end_time = esp_timer_get_time();
+            float latency_ms = (end_time - start_time) / 1000.0f;
+            //size_t free_sram = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+            //size_t free_psram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
+            uint32_t free_ram = esp_get_free_heap_size();
+
+            printf("METRIC_LOG: %.3f, %.3f, %.3f, %.2f, %lu\n", 
+                   heuristic_engine.GetEAR(), 
+                   heuristic_engine.GetMAR(), 
+                   fatigue_prob, 
+                   latency_ms, 
+                   (unsigned long)free_ram);
 
             // 5. Sensor Fusion & Alert Logic
             // Example: Trigger alert if either pipeline detects high fatigue
@@ -188,6 +205,10 @@ void dms_task(void *pvParameters) {
 // ==========================================
 // Application Entry Point
 // ==========================================
+static StaticTask_t dms_task_buffer;
+static StackType_t* dms_task_stack = nullptr;
+const uint32_t dms_stack_size = 8192 * 4;
+
 extern "C" void app_main(void) {
     ESP_LOGI(TAG, "Starting ESP32-S3 Driver Monitoring System");
 
@@ -209,20 +230,28 @@ extern "C" void app_main(void) {
     }
     ESP_LOGI(TAG, "TFLite Micro loaded successfully.");
 
+    dms_task_stack = (StackType_t*)heap_caps_malloc(dms_stack_size, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    
+    if (dms_task_stack == nullptr) {
+        ESP_LOGE(TAG, "Failed to allocate 32KB DMS task stack in PSRAM!");
+        return;
+    }
+
     // Pin the DMS task to Core 1 (Core 0 handles Wi-Fi/System by default)
-    BaseType_t task_status = xTaskCreatePinnedToCore(
-        dms_task, 
-        "DMS_Task", 
-        4096 * 4, // 16KB Stack size, adjust if MTMN needs more
-        NULL, 
-        5, 
-        NULL, 
-        1 // Core 1
+    TaskHandle_t dms_task_handle = xTaskCreateStaticPinnedToCore(
+        dms_task,
+        "DMS_Task",
+        dms_stack_size,
+        NULL,
+        5,               // Priority level
+        dms_task_stack,  // Pointer to the memory buffer in PSRAM
+        &dms_task_buffer, // Pointer to the task control architecture block
+        1                // Assigned to Core 1
     );
 
-    if (task_status != pdPASS) {
-        ESP_LOGE(TAG, "DMS Task Creation Failed! Error Code: %d (Out of SRAM Heap)", task_status);
+    if (dms_task_handle == nullptr) {
+        ESP_LOGE(TAG, "Static DMS Task Creation Failed!");
     } else {
-        ESP_LOGI(TAG, "DMS Task Successfully Spawned.");
+        ESP_LOGI(TAG, "DMS Task Successfully Allocated and Spawned in PSRAM.");
     }
 }

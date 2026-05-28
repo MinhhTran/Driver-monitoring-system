@@ -1,5 +1,6 @@
 #include "deep_learning.h"
 #include "fatigue_model_data.h"
+#include "esp_heap_caps.h"
 #include <algorithm>
 #include <cmath>
 
@@ -30,9 +31,20 @@ bool FatigueClassifier::Init() {
     if (resolver.AddMean() != kTfLiteOk)           return false;
     
     // Build the structural Micro Interpreter
-    static tflite::MicroInterpreter static_interpreter(
-        model_, resolver, tensor_arena_, kTensorArenaSize);
-    interpreter_ = &static_interpreter;
+    tensor_arena_ = (uint8_t*)heap_caps_aligned_alloc(
+        16, // Strict 16-Byte alignment for TFLite Micro SIMD operations
+        kTensorArenaSize, 
+        MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT
+    );
+
+    if (tensor_arena_ == nullptr) {
+        MicroPrintf("FATAL: Failed to allocate Tensor Arena in PSRAM!");
+        return false;
+    }
+    
+    interpreter_ = new tflite::MicroInterpreter(
+        model_, resolver, tensor_arena_, kTensorArenaSize
+    );
 
     // Allocate continuous memory across the Arena space
     TfLiteStatus allocate_status = interpreter_->AllocateTensors();
@@ -110,9 +122,16 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
     BBox mouth_box = GetBoxAroundCenter(mouth_center, mouth_w, mouth_h, frame_w, frame_h);
 
     // Temp storage buffers (stacks allocated)
-    uint8_t r_eye_patch[48 * 48 * 3];
-    uint8_t l_eye_patch[48 * 48 * 3];
-    uint8_t mouth_patch[96 * 48 * 3];
+    uint8_t* r_eye_patch = (uint8_t*)malloc(48 * 48 * 3);
+    uint8_t* l_eye_patch = (uint8_t*)malloc(48 * 48 * 3);
+    uint8_t* mouth_patch = (uint8_t*)malloc(96 * 48 * 3);
+
+    if (!r_eye_patch || !l_eye_patch || !mouth_patch) {
+        if (r_eye_patch) free(r_eye_patch);
+        if (l_eye_patch) free(l_eye_patch);
+        if (mouth_patch) free(mouth_patch);
+        return false;
+    }
 
     // 2. Perform the isolated cropping operations
     CropAndResizePatch(frame_buffer, frame_w, frame_h, r_eye_box, r_eye_patch, 48, 48);
@@ -154,6 +173,9 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
             tensor_input_ptr[tensor_pixel_idx + 2] = quantized_val;
         }
     }
+    free(r_eye_patch);
+    free(l_eye_patch);
+    free(mouth_patch);
     return true;
 }
 

@@ -58,7 +58,7 @@ private:
 
     // Tensor Arena allocation sizing for Quantized MobileNet
     static constexpr int kTensorArenaSize = 240 * 1024; 
-    uint8_t tensor_arena_[kTensorArenaSize];
+    uint8_t* tensor_arena_ = nullptr;
 };
 
 #endif // DEEP_LEARNING_H
