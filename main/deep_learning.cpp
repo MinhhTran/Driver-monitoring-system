@@ -60,7 +60,6 @@ bool FatigueClassifier::Init() {
 BBox FatigueClassifier::GetBoxAroundCenter(LandmarkPoint center, int width, int height, 
                                            int frame_w, int frame_h) {
     BBox b;
-    // Convert normalized coordinates back to absolute pixel values
     int cx = static_cast<int>(center.x * frame_w);
     int cy = static_cast<int>(center.y * frame_h);
 
@@ -84,14 +83,11 @@ void FatigueClassifier::CropAndResizePatch(const uint8_t* src_frame, int src_w, 
         for (int x = 0; x < dest_w; ++x) {
             int src_x = box.x_min + (x * box_w) / dest_w;
             int src_y = box.y_min + (y * box_h) / dest_h;
-
-            // Assuming a standard RGB888 interleaved array from the camera hardware
             int src_idx = (src_y * src_w + src_x) * 3;
             int dest_idx = (y * dest_w + x) * 3;
-
-            dest_patch[dest_idx]     = src_frame[src_idx];     // R
-            dest_patch[dest_idx + 1] = src_frame[src_idx + 1]; // G
-            dest_patch[dest_idx + 2] = src_frame[src_idx + 2]; // B
+            dest_patch[dest_idx]     = src_frame[src_idx];; 
+            dest_patch[dest_idx + 1] = src_frame[src_idx + 1]; 
+            dest_patch[dest_idx + 2] = src_frame[src_idx + 2];
         }
     }
 }
@@ -130,7 +126,7 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
         return false;
     }
 
-    // 2. Perform the isolated cropping operations
+    // 3. Perform the isolated cropping operations
     CropAndResizePatch(frame_buffer, frame_w, frame_h, r_eye_box, r_eye_patch, 48, 48);
     CropAndResizePatch(frame_buffer, frame_w, frame_h, l_eye_box, l_eye_patch, 48, 48);
     CropAndResizePatch(frame_buffer, frame_w, frame_h, mouth_box, mouth_patch, 96, 48);
@@ -164,8 +160,10 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
             float normalized_val = static_cast<float>(gray) / 255.0f;
             int8_t quantized_val = static_cast<int8_t>(normalized_val / input_scale + input_zero_point);
 
-            int tensor_pixel_idx = (y * 96 + x);
+            int tensor_pixel_idx = (y * 96 + x)*3;
             tensor_input_ptr[tensor_pixel_idx] = quantized_val;
+            tensor_input_ptr[tensor_pixel_idx + 1] = quantized_val;
+            tensor_input_ptr[tensor_pixel_idx + 2] = quantized_val;
             //float norm_r = static_cast<float>(r) / 255.0f;
             //float norm_g = static_cast<float>(g) / 255.0f;
             //float norm_b = static_cast<float>(b) / 255.0f;
@@ -181,12 +179,6 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
     heap_caps_free(r_eye_patch);
     heap_caps_free(l_eye_patch);
     heap_caps_free(mouth_patch);
-
-    printf("IMG_DUMP:");
-    for (int i = 0; i < 96 * 96 * 3; i++) {
-        printf("%d,", input_tensor_->data.int8[i]);
-    }
-    printf("\n");
 
     return true;
 }
