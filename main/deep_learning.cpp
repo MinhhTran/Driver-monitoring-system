@@ -4,10 +4,6 @@
 #include <algorithm>
 #include <cmath>
 
-//const int RIGHT_EYE_INDICES[] = {33, 160, 158, 133, 153, 144};
-//const int LEFT_EYE_INDICES[]  = {362, 385, 387, 263, 373, 380};
-//const int MOUTH_INDICES[]     = {78, 308, 13, 14, 61, 291, 0, 17};
-
 FatigueClassifier::FatigueClassifier() {}
 
 bool FatigueClassifier::Init() {
@@ -107,8 +103,8 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
     int face_height = face.box.y_max - face.box.y_min;
 
     // Estimate: Eye box is ~35% of face width, Mouth is ~50% width and 30% height
-    int eye_size = static_cast<int>(face_width * 0.35f);
-    int mouth_w = static_cast<int>(face_width * 0.50f);
+    int eye_size = static_cast<int>(face_width * 0.45f);
+    int mouth_w = static_cast<int>(face_width * 0.60f);
     int mouth_h = static_cast<int>(face_height * 0.30f);
 
     // 2. Generate the bounding boxes around the MTMN keypoints
@@ -148,7 +144,7 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
         for (int x = 0; x < 96; ++x) {
             uint8_t r = 0, g = 0, b = 0;
 
-            if (y < 48) { // Top half assembly: Eyes side by side[cite: 2]
+            if (y < 48) { // Top half assembly: Eyes side by side
                 if (x < 48) {
                     int idx = (y * 48 + x) * 3;
                     r = r_eye_patch[idx]; g = r_eye_patch[idx+1]; b = r_eye_patch[idx+2];
@@ -156,27 +152,42 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
                     int idx = (y * 48 + (x - 48)) * 3;
                     r = l_eye_patch[idx]; g = l_eye_patch[idx+1]; b = l_eye_patch[idx+2];
                 }
-            } else { // Bottom half assembly: Mouth patch[cite: 2]
+            } else { // Bottom half assembly: Mouth patch
                 int idx = ((y - 48) * 96 + x) * 3;
                 r = mouth_patch[idx]; g = mouth_patch[idx+1]; b = mouth_patch[idx+2];
             }
 
-            // Grayscale transformation trick matching Python side configuration[cite: 2]
+            // Grayscale transformation trick matching Python side configuration
             uint8_t gray = static_cast<uint8_t>(0.299f * r + 0.587f * g + 0.114f * b);
 
-            // Replicate Gray across 3 channels, scale normalize (0.0 - 1.0f) and convert to INT8[cite: 2]
+            // Replicate Gray across 3 channels, scale normalize (0.0 - 1.0f) and convert to INT8
             float normalized_val = static_cast<float>(gray) / 255.0f;
             int8_t quantized_val = static_cast<int8_t>(normalized_val / input_scale + input_zero_point);
 
-            int tensor_pixel_idx = (y * 96 + x) * 3;
-            tensor_input_ptr[tensor_pixel_idx]     = quantized_val;
-            tensor_input_ptr[tensor_pixel_idx + 1] = quantized_val;
-            tensor_input_ptr[tensor_pixel_idx + 2] = quantized_val;
+            int tensor_pixel_idx = (y * 96 + x);
+            tensor_input_ptr[tensor_pixel_idx] = quantized_val;
+            //float norm_r = static_cast<float>(r) / 255.0f;
+            //float norm_g = static_cast<float>(g) / 255.0f;
+            //float norm_b = static_cast<float>(b) / 255.0f;
+            //int8_t quant_r = static_cast<int8_t>(std::round(norm_r / input_scale) + input_zero_point);
+            //int8_t quant_g = static_cast<int8_t>(std::round(norm_g / input_scale) + input_zero_point);
+            //int8_t quant_b = static_cast<int8_t>(std::round(norm_b / input_scale) + input_zero_point);
+            //int tensor_pixel_idx = (y * 96 + x) * 3;
+            //tensor_input_ptr[tensor_pixel_idx]     = quant_r;
+            //tensor_input_ptr[tensor_pixel_idx + 1] = quant_g;
+            //tensor_input_ptr[tensor_pixel_idx + 2] = quant_b;
         }
     }
     heap_caps_free(r_eye_patch);
     heap_caps_free(l_eye_patch);
     heap_caps_free(mouth_patch);
+
+    printf("IMG_DUMP:");
+    for (int i = 0; i < 96 * 96 * 3; i++) {
+        printf("%d,", input_tensor_->data.int8[i]);
+    }
+    printf("\n");
+
     return true;
 }
 

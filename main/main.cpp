@@ -90,8 +90,8 @@ static esp_err_t init_camera() {
 // ==========================================
 // Main Execution Loop
 // ==========================================
-#define RUN_HEURISTIC_PIPELINE
-//#define RUN_DEEP_LEARNING_PIPELINE
+//#define RUN_HEURISTIC_PIPELINE
+#define RUN_DEEP_LEARNING_PIPELINE
 HumanFaceDetectMSR01 face_detector(0.3F, 0.3F, 1, 0.3F);
 void dms_task(void *pvParameters) {
     ESP_LOGI(TAG, "DMS Task Started");
