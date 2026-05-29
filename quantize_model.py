@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 
 model = tf.keras.models.load_model('fatigue_model_base.h5')
-DATASET_DIR = 'nthu_patched/train'
+DATASET_DIR = 'nthu_patched_2/train'
 
 # batch_size = 1 => yield one image at a time.
 calib_ds = tf.keras.utils.image_dataset_from_directory(
@@ -55,7 +55,6 @@ with open('fatigue_model_quantized.tflite', 'rb') as f:
 # Generate the C code
 c_model = hex_to_c_array(tflite_model_binary, "g_fatigue_model_data")
 
-# Save as a .cc or .h file for your ESP-IDF/Arduino project
 with open('fatigue_model_data.cc', 'w') as f:
     f.write('#include "fatigue_model_data.h"\n\n')
     f.write(c_model)
