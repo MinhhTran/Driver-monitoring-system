@@ -75,8 +75,8 @@ bool FatigueClassifier::Init() {
 BBox FatigueClassifier::GetBoxAroundCenter(LandmarkPoint center, int width, int height, 
                                            int frame_w, int frame_h) {
     BBox b;
-    int cx = static_cast<int>(center.x);
-    int cy = static_cast<int>(center.y);
+    int cx = static_cast<int>(center.x * frame_w);
+    int cy = static_cast<int>(center.y * frame_h);
 
     // Create the box and clamp to image boundaries to prevent SegFaults
     b.x_min = std::max(0, cx - (width / 2));
@@ -151,8 +151,8 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
     CropAndResizePatch(frame_buffer, frame_w, frame_h, l_eye_box, l_eye_patch, 48, 48);
     CropAndResizePatch(frame_buffer, frame_w, frame_h, mouth_box, mouth_patch, 96, 48);
 
-    DumpHexBuffer("RIGHT_EYE_PATCH", r_eye_patch, 48 * 48 * 3);
-
+    //DumpHexBuffer("RIGHT_EYE_PATCH", r_eye_patch, 48 * 48 * 3);
+    
     // 4. Dense Stitched Vector Compositing directly into the input tensor buffer (96x96x3)
     int8_t* tensor_input_ptr = input_tensor_->data.int8;
     float input_scale = input_tensor_->params.scale;
@@ -200,7 +200,7 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
             //tensor_input_ptr[tensor_pixel_idx + 2] = quant_b;
         }
     }
-    DumpHexBuffer("FINAL_TENSOR", (uint8_t*)input_tensor_->data.int8, 96 * 96 * 3);
+    //DumpHexBuffer("FINAL_TENSOR", (uint8_t*)input_tensor_->data.int8, 96 * 96 * 3);
 
     heap_caps_free(r_eye_patch);
     heap_caps_free(l_eye_patch);

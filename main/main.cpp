@@ -123,7 +123,14 @@ void dms_task(void *pvParameters) {
             if (!results.empty()) {
                 face_detected = true;
                 dl::detect::result_t best_face = results.front();
-                
+                ESP_LOGI(TAG, "MTMN Box: [%f, %f, %f, %f]", best_face.box[0], best_face.box[1], best_face.box[2], best_face.box[3]);
+                ESP_LOGI(TAG, "MTMN Keypoint Array Size: %d", best_face.keypoint.size());
+
+                if (best_face.keypoint.size() >= 10) {
+                    ESP_LOGI(TAG, "Left Eye X: %f", best_face.keypoint[0]);
+                } else {
+                    ESP_LOGE(TAG, "CRITICAL: MTMN did not output keypoints!");
+                }
                 // Populate our unified MTMNFace struct
                 // A. Absolute Bounding Box
                 detected_face.box.x_min = std::max(0, best_face.box[0]);
