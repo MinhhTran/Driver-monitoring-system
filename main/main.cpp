@@ -110,7 +110,7 @@ void dms_task(void *pvParameters) {
         MTMNFace detected_face;
 
         if (rgb888_buf) {
-            // Convert raw camera format (usually RGB565) to RGB888
+            // Convert raw camera format RGB565 to RGB888
             fmt2rgb888(fb->buf, fb->len, fb->format, rgb888_buf);
 
             // 2. FACE DETECTION & LANDMARK EXTRACTION

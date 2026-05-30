@@ -1,8 +1,11 @@
 #include "deep_learning.h"
 #include "fatigue_model_data.h"
 #include "esp_heap_caps.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #include <algorithm>
 #include <cmath>
+#include <stdio.h>
 
 FatigueClassifier::FatigueClassifier() {}
 
@@ -131,7 +134,7 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
     CropAndResizePatch(frame_buffer, frame_w, frame_h, l_eye_box, l_eye_patch, 48, 48);
     CropAndResizePatch(frame_buffer, frame_w, frame_h, mouth_box, mouth_patch, 96, 48);
 
-    // 3. Dense Stitched Vector Compositing directly into the input tensor buffer (96x96x3)
+    // 4. Dense Stitched Vector Compositing directly into the input tensor buffer (96x96x3)
     int8_t* tensor_input_ptr = input_tensor_->data.int8;
     float input_scale = input_tensor_->params.scale;
     int32_t input_zero_point = input_tensor_->params.zero_point;
@@ -158,7 +161,9 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
 
             // Replicate Gray across 3 channels, scale normalize (0.0 - 1.0f) and convert to INT8
             float normalized_val = static_cast<float>(gray) / 255.0f;
-            int8_t quantized_val = static_cast<int8_t>(normalized_val / input_scale + input_zero_point);
+            int32_t calc_val = static_cast<int32_t>(std::round(normalized_val / input_scale) + input_zero_point);
+            calc_val = std::max(static_cast<int32_t>(-128), std::min(static_cast<int32_t>(127), calc_val));
+            int8_t quantized_val = static_cast<int8_t>(calc_val);
 
             int tensor_pixel_idx = (y * 96 + x)*3;
             tensor_input_ptr[tensor_pixel_idx] = quantized_val;
@@ -184,13 +189,13 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
 }
 
 float FatigueClassifier::RunInference() {
-    // Invoke the Interpreter onto the hardware layers[cite: 2]
+    // Invoke the Interpreter onto the hardware layers
     if (interpreter_->Invoke() != kTfLiteOk) {
         MicroPrintf("Inference Engine Invoke Fault!");
         return -1.0f;
     }
 
-    // Unpack INT8 quantized raw layer scalar value into Dequantized Standard Probabilities[cite: 2]
+    // Unpack INT8 quantized raw layer scalar value into Dequantized Standard Probabilities
     int8_t quantized_output = output_tensor_->data.int8[0];
     float output_scale = output_tensor_->params.scale;
     int32_t output_zero_point = output_tensor_->params.zero_point;
