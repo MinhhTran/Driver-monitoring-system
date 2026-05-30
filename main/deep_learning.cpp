@@ -9,6 +9,18 @@
 
 FatigueClassifier::FatigueClassifier() {}
 
+void DumpHexBuffer(const char* label, const uint8_t* buffer, int length) {
+    printf("---START_%s---\n", label);
+    for (int i = 0; i < length; i++) {
+        printf("%02X", buffer[i]);
+        // Feed the watchdog every 10,000 bytes to prevent a crash
+        if (i > 0 && i % 10000 == 0) {
+            vTaskDelay(pdMS_TO_TICKS(10));
+        }
+    }
+    printf("\n---END_%s---\n", label);
+}
+
 bool FatigueClassifier::Init() {
     // Map the compiled model array into the TFLite runtime space
     model_ = tflite::GetModel(g_fatigue_model_data);
@@ -63,8 +75,8 @@ bool FatigueClassifier::Init() {
 BBox FatigueClassifier::GetBoxAroundCenter(LandmarkPoint center, int width, int height, 
                                            int frame_w, int frame_h) {
     BBox b;
-    int cx = static_cast<int>(center.x * frame_w);
-    int cy = static_cast<int>(center.y * frame_h);
+    int cx = static_cast<int>(center.x);
+    int cy = static_cast<int>(center.y);
 
     // Create the box and clamp to image boundaries to prevent SegFaults
     b.x_min = std::max(0, cx - (width / 2));
@@ -117,6 +129,11 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
     mouth_center.y = (face.left_mouth.y + face.right_mouth.y) / 2.0f;
     BBox mouth_box = GetBoxAroundCenter(mouth_center, mouth_w, mouth_h, frame_w, frame_h);
 
+    printf("---BBOX_DEBUG---\n");
+    printf("R_Eye: X[%d to %d], Y[%d to %d]\n", r_eye_box.x_min, r_eye_box.x_max, r_eye_box.y_min, r_eye_box.y_max);
+    printf("L_Eye: X[%d to %d], Y[%d to %d]\n", l_eye_box.x_min, l_eye_box.x_max, l_eye_box.y_min, l_eye_box.y_max);
+    printf("Mouth: X[%d to %d], Y[%d to %d]\n", mouth_box.x_min, mouth_box.x_max, mouth_box.y_min, mouth_box.y_max);
+
     // Temp storage buffers (stacks allocated)
     uint8_t* r_eye_patch = (uint8_t*)heap_caps_malloc(48 * 48 * 3, MALLOC_CAP_SPIRAM);
     uint8_t* l_eye_patch = (uint8_t*)heap_caps_malloc(48 * 48 * 3, MALLOC_CAP_SPIRAM);
@@ -133,6 +150,8 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
     CropAndResizePatch(frame_buffer, frame_w, frame_h, r_eye_box, r_eye_patch, 48, 48);
     CropAndResizePatch(frame_buffer, frame_w, frame_h, l_eye_box, l_eye_patch, 48, 48);
     CropAndResizePatch(frame_buffer, frame_w, frame_h, mouth_box, mouth_patch, 96, 48);
+
+    DumpHexBuffer("RIGHT_EYE_PATCH", r_eye_patch, 48 * 48 * 3);
 
     // 4. Dense Stitched Vector Compositing directly into the input tensor buffer (96x96x3)
     int8_t* tensor_input_ptr = input_tensor_->data.int8;
@@ -181,6 +200,8 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
             //tensor_input_ptr[tensor_pixel_idx + 2] = quant_b;
         }
     }
+    DumpHexBuffer("FINAL_TENSOR", (uint8_t*)input_tensor_->data.int8, 96 * 96 * 3);
+
     heap_caps_free(r_eye_patch);
     heap_caps_free(l_eye_patch);
     heap_caps_free(mouth_patch);
