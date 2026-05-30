@@ -92,7 +92,10 @@ static esp_err_t init_camera() {
 // ==========================================
 //#define RUN_HEURISTIC_PIPELINE
 #define RUN_DEEP_LEARNING_PIPELINE
-HumanFaceDetectMSR01 face_detector(0.3F, 0.3F, 1, 0.3F);
+
+HumanFaceDetectMSR01 face_detector_stage1(0.3F, 0.3F, 1, 0.3F);
+HumanFaceDetectMNP01 face_detector_stage2(0.4F, 0.3F, 1);
+
 void dms_task(void *pvParameters) {
     ESP_LOGI(TAG, "DMS Task Started");
     while (true) {
@@ -118,7 +121,8 @@ void dms_task(void *pvParameters) {
             //std::list<dl::detect::result_t> &results = face_detector.infer(
             //    rgb888_buf, {fb->height, fb->width, 3}
             //);
-            auto &results = face_detector.infer(rgb888_buf, {(int)fb->height, (int)fb->width, 3});
+            auto &candidates = face_detector_stage1.infer(rgb888_buf, {(int)fb->height, (int)fb->width, 3});
+            auto &results = face_detector_stage2.infer(rgb888_buf, {(int)fb->height, (int)fb->width, 3}, candidates);
             ESP_LOGI(TAG, "Inference complete. Faces found: %d", results.size());
             if (!results.empty()) {
                 face_detected = true;
