@@ -144,16 +144,16 @@ void dms_task(void *pvParameters) {
 
                 // B. Normalized Keypoints (ESP-DL gives absolute, so we convert them)
                 // [0-1] Left Eye, [2-3] Right Eye, [4-5] Nose, [6-7] Left Mouth, [8-9] Right Mouth
-                detected_face.left_eye.x    = best_face.keypoint[0] / (float)fb->width;
-                detected_face.left_eye.y    = best_face.keypoint[1] / (float)fb->height;
-                detected_face.right_eye.x   = best_face.keypoint[2] / (float)fb->width;
-                detected_face.right_eye.y   = best_face.keypoint[3] / (float)fb->height;
+                detected_face.left_eye.x    = best_face.keypoint[6] / (float)fb->width;
+                detected_face.left_eye.y    = best_face.keypoint[7] / (float)fb->height;
+                detected_face.right_eye.x   = best_face.keypoint[0] / (float)fb->width;
+                detected_face.right_eye.y   = best_face.keypoint[1] / (float)fb->height;
                 detected_face.nose.x        = best_face.keypoint[4] / (float)fb->width;
                 detected_face.nose.y        = best_face.keypoint[5] / (float)fb->height;
-                detected_face.left_mouth.x  = best_face.keypoint[6] / (float)fb->width;
-                detected_face.left_mouth.y  = best_face.keypoint[7] / (float)fb->height;
-                detected_face.right_mouth.x = best_face.keypoint[8] / (float)fb->width;
-                detected_face.right_mouth.y = best_face.keypoint[9] / (float)fb->height;
+                detected_face.left_mouth.x  = best_face.keypoint[8] / (float)fb->width;
+                detected_face.left_mouth.y  = best_face.keypoint[9] / (float)fb->height;
+                detected_face.right_mouth.x = best_face.keypoint[2] / (float)fb->width;
+                detected_face.right_mouth.y = best_face.keypoint[3] / (float)fb->height;
             }
         } else {
             ESP_LOGE(TAG, "Failed to allocate RGB888 buffer! Check SRAM availability.");

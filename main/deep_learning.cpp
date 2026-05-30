@@ -98,6 +98,8 @@ void FatigueClassifier::CropAndResizePatch(const uint8_t* src_frame, int src_w, 
         for (int x = 0; x < dest_w; ++x) {
             int src_x = box.x_min + (x * box_w) / dest_w;
             int src_y = box.y_min + (y * box_h) / dest_h;
+            src_x = std::max(0, std::min(src_w - 1, src_x));
+            src_y = std::max(0, std::min(src_h - 1, src_y));
             int src_idx = (src_y * src_w + src_x) * 3;
             int dest_idx = (y * dest_w + x) * 3;
             dest_patch[dest_idx]     = src_frame[src_idx];; 
