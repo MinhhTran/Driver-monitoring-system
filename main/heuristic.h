@@ -67,6 +67,14 @@ private:
     // Internal Pipeline State Objects
     SimpleKalmanFilter ear_filter_;
     SimpleKalmanFilter mar_filter_;
+    SimpleKalmanFilter l_eye_x_filter_;
+    SimpleKalmanFilter l_eye_y_filter_;
+    SimpleKalmanFilter r_eye_x_filter_;
+    SimpleKalmanFilter r_eye_y_filter_;
+    SimpleKalmanFilter m_left_x_filter_;
+    SimpleKalmanFilter m_left_y_filter_;
+    SimpleKalmanFilter m_right_x_filter_;
+    SimpleKalmanFilter m_right_y_filter_;
     
     // Memory-Optimized Ring Buffer for PERCLOS sliding window tracking
     // Replaces standard heap-based std::vector allocation to protect SRAM

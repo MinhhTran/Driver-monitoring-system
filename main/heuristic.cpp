@@ -27,6 +27,10 @@ float SimpleKalmanFilter::update(float measurement) {
 HeuristicPipeline::HeuristicPipeline() 
     : ear_filter_(1e-5f, 1e-1f, 1.0f), 
       mar_filter_(1e-5f, 1e-1f, 1.0f),
+      l_eye_x_filter_(1e-2f, 1e-1f, 1.0f), l_eye_y_filter_(1e-2f, 1e-1f, 1.0f),
+      r_eye_x_filter_(1e-2f, 1e-1f, 1.0f), r_eye_y_filter_(1e-2f, 1e-1f, 1.0f),
+      m_left_x_filter_(1e-2f, 1e-1f, 1.0f), m_left_y_filter_(1e-2f, 1e-1f, 1.0f),
+      m_right_x_filter_(1e-2f, 1e-1f, 1.0f), m_right_y_filter_(1e-2f, 1e-1f, 1.0f),
       head_idx_(0), 
       total_elements_(0), 
       closed_frame_sum_(0), 
@@ -132,10 +136,21 @@ std::vector<Point> HeuristicPipeline::ExtractMouthPoints(const uint8_t* frame, i
 
 void HeuristicPipeline::UpdateMetrics(const uint8_t* frame_buffer, int frame_w, int frame_h, const MTMNFace& face) {
     // 1. Convert normalized MTMN points to absolute pixels
-    int l_eye_cx = face.left_eye.x * frame_w;
-    int l_eye_cy = face.left_eye.y * frame_h;
-    int r_eye_cx = face.right_eye.x * frame_w;
-    int r_eye_cy = face.right_eye.y * frame_h;
+    float raw_l_eye_x = face.left_eye.x * frame_w;
+    float raw_l_eye_y = face.left_eye.y * frame_h;
+    float raw_r_eye_x = face.right_eye.x * frame_w;
+    float raw_r_eye_y = face.right_eye.y * frame_h;
+    
+    float raw_m_left_x = face.left_mouth.x * frame_w;
+    float raw_m_left_y = face.left_mouth.y * frame_h;
+    float raw_m_right_x = face.right_mouth.x * frame_w;
+    float raw_m_right_y = face.right_mouth.y * frame_h;
+
+    // Apply Kalman filters
+    int l_eye_cx = (int)l_eye_x_filter_.update(raw_l_eye_x);
+    int l_eye_cy = (int)l_eye_y_filter_.update(raw_l_eye_y);
+    int r_eye_cx = (int)r_eye_x_filter_.update(raw_r_eye_x);
+    int r_eye_cy = (int)r_eye_y_filter_.update(raw_r_eye_y);
     
     Point m_left = {face.left_mouth.x * frame_w, face.left_mouth.y * frame_h};
     Point m_right = {face.right_mouth.x * frame_w, face.right_mouth.y * frame_h};
