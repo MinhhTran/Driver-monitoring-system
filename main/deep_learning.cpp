@@ -131,10 +131,10 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
     mouth_center.y = (face.left_mouth.y + face.right_mouth.y) / 2.0f;
     BBox mouth_box = GetBoxAroundCenter(mouth_center, mouth_w, mouth_h, frame_w, frame_h);
 
-    printf("---BBOX_DEBUG---\n");
-    printf("R_Eye: X[%d to %d], Y[%d to %d]\n", r_eye_box.x_min, r_eye_box.x_max, r_eye_box.y_min, r_eye_box.y_max);
-    printf("L_Eye: X[%d to %d], Y[%d to %d]\n", l_eye_box.x_min, l_eye_box.x_max, l_eye_box.y_min, l_eye_box.y_max);
-    printf("Mouth: X[%d to %d], Y[%d to %d]\n", mouth_box.x_min, mouth_box.x_max, mouth_box.y_min, mouth_box.y_max);
+    //printf("---BBOX_DEBUG---\n");
+    //printf("R_Eye: X[%d to %d], Y[%d to %d]\n", r_eye_box.x_min, r_eye_box.x_max, r_eye_box.y_min, r_eye_box.y_max);
+    //printf("L_Eye: X[%d to %d], Y[%d to %d]\n", l_eye_box.x_min, l_eye_box.x_max, l_eye_box.y_min, l_eye_box.y_max);
+    //printf("Mouth: X[%d to %d], Y[%d to %d]\n", mouth_box.x_min, mouth_box.x_max, mouth_box.y_min, mouth_box.y_max);
 
     // Temp storage buffers (stacks allocated)
     uint8_t* r_eye_patch = (uint8_t*)heap_caps_malloc(48 * 48 * 3, MALLOC_CAP_SPIRAM);
