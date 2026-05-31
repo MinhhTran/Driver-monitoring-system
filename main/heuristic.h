@@ -55,13 +55,13 @@ public:
     float GetMAR() const { return last_smoothed_mar_; }
 
     // Re-exposed calculation methods for internal processing
-    static float CalculateEar(const std::vector<Point>& eyes);
+    static float CalculateEar(float eye_height, float inter_ocular_dist);
     static float CalculateMar(const std::vector<Point>& mouth);
     static float EuclideanDistance(Point p1, Point p2);
 
 private:
     uint8_t GetPixelGray(const uint8_t* frame, int frame_w, int frame_h, int x, int y);
-    std::vector<Point> ExtractEyePoints(const uint8_t* frame, int frame_w, int frame_h, int cx, int cy, int roi_w, int roi_h);
+    float ExtractEyeHeight(const uint8_t* frame, int frame_w, int frame_h, int cx, int cy, int roi_h);
     std::vector<Point> ExtractMouthPoints(const uint8_t* frame, int frame_w, int frame_h, Point p0, Point p1, int roi_h);
 
     // Internal Pipeline State Objects
