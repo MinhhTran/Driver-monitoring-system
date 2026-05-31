@@ -85,16 +85,36 @@ static esp_err_t init_camera() {
         return err;
     }
     return ESP_OK;
+
+    sensor_t *s = esp_camera_sensor_get();
+    if (s != NULL) {
+        ESP_LOGI(TAG, "Applying OV3660 tuning for AI detection");
+        
+        // 1. Lighting and Glare Control
+        s->set_brightness(s, 2);     // +2: Brighten to reveal eyes behind glasses frames
+        s->set_contrast(s, -1);      // -1: Soften harsh shadows that trick the model
+        s->set_saturation(s, -1);    // -1: Flatten colors (AI models prefer this)
+        
+        // 2. Ensure Auto-Exposure is handling cabin light changes
+        s->set_exposure_ctrl(s, 1);  // 1 = Enable auto exposure
+        s->set_aec2(s, 1);           // 1 = Enable advanced DSP auto exposure
+        s->set_gain_ctrl(s, 1);      // 1 = Enable auto gain
+        // s->set_special_effect(s, 2); // 2 = Grayscale
+    } else {
+        ESP_LOGW(TAG, "Failed to get camera sensor object for tuning.");
+    }
+
+    return ESP_OK;
 }
 
 // ==========================================
 // Main Execution Loop
 // ==========================================
-#define RUN_HEURISTIC_PIPELINE
-//#define RUN_DEEP_LEARNING_PIPELINE
+//#define RUN_HEURISTIC_PIPELINE
+#define RUN_DEEP_LEARNING_PIPELINE
 
-HumanFaceDetectMSR01 face_detector_stage1(0.3F, 0.3F, 1, 0.3F);
-HumanFaceDetectMNP01 face_detector_stage2(0.4F, 0.3F, 1);
+HumanFaceDetectMSR01 face_detector_stage1(0.2F, 0.3F, 1, 0.3F);
+HumanFaceDetectMNP01 face_detector_stage2(0.3F, 0.3F, 1);
 
 void dms_task(void *pvParameters) {
     ESP_LOGI(TAG, "DMS Task Started");
@@ -121,12 +141,21 @@ void dms_task(void *pvParameters) {
             //std::list<dl::detect::result_t> &results = face_detector.infer(
             //    rgb888_buf, {fb->height, fb->width, 3}
             //);
+            static int frames_since_last_detection = 0;
+            const int MAX_TRACKING_FRAMES = 10; // At ~10 FPS, this is 1 second of yawning/glare forgiveness
+            static dl::detect::result_t last_known_face; 
+            static bool has_last_known_face = false;
+
             auto &candidates = face_detector_stage1.infer(rgb888_buf, {(int)fb->height, (int)fb->width, 3});
             auto &results = face_detector_stage2.infer(rgb888_buf, {(int)fb->height, (int)fb->width, 3}, candidates);
             ESP_LOGI(TAG, "Inference complete. Faces found: %d", results.size());
+            dl::detect::result_t best_face;
             if (!results.empty()) {
                 face_detected = true;
-                dl::detect::result_t best_face = results.front();
+                best_face = results.front();
+                last_known_face = best_face;
+                has_last_known_face = true;
+                frames_since_last_detection = 0;
                 //ESP_LOGI(TAG, "MTMN Box: [%f, %f, %f, %f]", best_face.box[0], best_face.box[1], best_face.box[2], best_face.box[3]);
                 //ESP_LOGI(TAG, "MTMN Keypoint Array Size: %d", best_face.keypoint.size());
 
@@ -135,91 +164,106 @@ void dms_task(void *pvParameters) {
                 //} else {
                 //    ESP_LOGE(TAG, "CRITICAL: MTMN did not output keypoints!");
                 //}
-                // Populate our unified MTMNFace struct
-                // A. Absolute Bounding Box
-                detected_face.box.x_min = std::max(0, best_face.box[0]);
-                detected_face.box.y_min = std::max(0, best_face.box[1]);
-                detected_face.box.x_max = std::min((int)fb->width, best_face.box[2]);
-                detected_face.box.y_max = std::min((int)fb->height, best_face.box[3]);
+            } else {
+                if (has_last_known_face && frames_since_last_detection < MAX_TRACKING_FRAMES) {
+                    ESP_LOGW(TAG, "Face lost (glare/yawn). Using last known pos (Frame %d/%d)", frames_since_last_detection + 1, MAX_TRACKING_FRAMES);
+                    face_detected = true;
+                    best_face = last_known_face; // Restore the cached bounding box & keypoints
+                    frames_since_last_detection++;
+                } else {
+                    has_last_known_face = false; // Reset the cache just to be safe
+                    face_detected = false;
+                }
+            }
 
-                // B. Normalized Keypoints (ESP-DL gives absolute, so we convert them)
-                // [0-1] Left Eye, [2-3] Right Eye, [4-5] Nose, [6-7] Left Mouth, [8-9] Right Mouth
-                detected_face.left_eye.x    = best_face.keypoint[6] / (float)fb->width;
-                detected_face.left_eye.y    = best_face.keypoint[7] / (float)fb->height;
-                detected_face.right_eye.x   = best_face.keypoint[0] / (float)fb->width;
-                detected_face.right_eye.y   = best_face.keypoint[1] / (float)fb->height;
-                detected_face.nose.x        = best_face.keypoint[4] / (float)fb->width;
-                detected_face.nose.y        = best_face.keypoint[5] / (float)fb->height;
-                detected_face.left_mouth.x  = best_face.keypoint[8] / (float)fb->width;
-                detected_face.left_mouth.y  = best_face.keypoint[9] / (float)fb->height;
-                detected_face.right_mouth.x = best_face.keypoint[2] / (float)fb->width;
-                detected_face.right_mouth.y = best_face.keypoint[3] / (float)fb->height;
+            if (face_detected) {
+                if (best_face.keypoint.size() < 10) {
+                    ESP_LOGE(TAG, "CRITICAL: MTMN returned invalid keypoint size!");
+                    face_detected = false; // Abort this frame
+                } else {
+                    // Populate our unified MTMNFace struct
+                    // A. Absolute Bounding Box
+                    detected_face.box.x_min = std::max(0, best_face.box[0]);
+                    detected_face.box.y_min = std::max(0, best_face.box[1]);
+                    detected_face.box.x_max = std::min((int)fb->width, best_face.box[2]);
+                    detected_face.box.y_max = std::min((int)fb->height, best_face.box[3]);
+
+                    // B. Normalized Keypoints (ESP-DL gives absolute, so we convert them)
+                    // [0-1] Left Eye, [2-3] Right Eye, [4-5] Nose, [6-7] Left Mouth, [8-9] Right Mouth
+                    detected_face.left_eye.x    = best_face.keypoint[6] / (float)fb->width;
+                    detected_face.left_eye.y    = best_face.keypoint[7] / (float)fb->height;
+                    detected_face.right_eye.x   = best_face.keypoint[0] / (float)fb->width;
+                    detected_face.right_eye.y   = best_face.keypoint[1] / (float)fb->height;
+                    detected_face.nose.x        = best_face.keypoint[4] / (float)fb->width;
+                    detected_face.nose.y        = best_face.keypoint[5] / (float)fb->height;
+                    detected_face.left_mouth.x  = best_face.keypoint[8] / (float)fb->width;
+                    detected_face.left_mouth.y  = best_face.keypoint[9] / (float)fb->height;
+                    detected_face.right_mouth.x = best_face.keypoint[2] / (float)fb->width;
+                    detected_face.right_mouth.y = best_face.keypoint[3] / (float)fb->height;
+
+                    //ESP_LOGI(TAG, "Running inference pipeline components...");
+                    int64_t start_time = esp_timer_get_time();
+                    // 3. Run Pipeline A: Heuristic (Geometric)
+                    #ifdef RUN_HEURISTIC_PIPELINE
+                        heuristic_engine.UpdateMetrics(rgb888_buf, fb->width, fb->height, detected_face);
+                        bool is_drowsy_heuristic = heuristic_engine.IsDrowsy();
+                        bool is_yawning = heuristic_engine.IsYawning();
+
+                        if (is_drowsy_heuristic || is_yawning > 0.75f) {
+                            ESP_LOGW(TAG, "FATIGUE DETECTED!");
+                            gpio_set_level(ALERT_PIN, 1); // Trigger Buzzer
+                        } else {
+                            gpio_set_level(ALERT_PIN, 0); // Turn off Buzzer
+                        }
+
+                        int64_t end_time = esp_timer_get_time();
+                        float latency_ms = (end_time - start_time) / 1000.0f;
+                        size_t free_sram = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+                        size_t free_psram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
+
+                        ESP_LOGI(TAG, "METRICS | EAR: %.3f | MAR: %.3f | Latency: %.2f ms | Free SRAM: %zu B | Free PSRAM: %zu B",
+                            heuristic_engine.GetEAR(),
+                            heuristic_engine.GetMAR(),
+                            latency_ms,
+                            free_sram,
+                            free_psram);
+                    #endif
+
+                    // 4. Run Pipeline B: Deep Learning (TFLite Micro)
+                    #ifdef RUN_DEEP_LEARNING_PIPELINE
+                        bool pack_success = dl_classifier.PreprocessAndPack(
+                            rgb888_buf, fb->width, fb->height, detected_face
+                        );
+
+                        float fatigue_prob = 0.0f;
+                        if (pack_success) {
+                            fatigue_prob = dl_classifier.RunInference();
+                        }
+
+                        if (fatigue_prob > 0.7f) {
+                            ESP_LOGW(TAG, "FATIGUE DETECTED! ML Prob: %.2f", fatigue_prob);
+                            gpio_set_level(ALERT_PIN, 1); // Trigger Buzzer
+                        } else {
+                            gpio_set_level(ALERT_PIN, 0); // Turn off Buzzer
+                        }
+
+                        int64_t end_time = esp_timer_get_time();
+                        float latency_ms = (end_time - start_time) / 1000.0f;
+                        size_t free_sram = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+                        size_t free_psram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
+
+                        ESP_LOGI(TAG, "METRICS | Fatigue: %.1f%% | Latency: %.2f ms | Free SRAM: %zu B | Free PSRAM: %zu B",
+                                fatigue_prob * 100.0f,
+                                latency_ms,
+                                free_sram,
+                                free_psram);
+                    #endif
+                }
+            } else {
+                gpio_set_level(ALERT_PIN, 0);
             }
         } else {
             ESP_LOGE(TAG, "Failed to allocate RGB888 buffer! Check SRAM availability.");
-        }
-
-        if (face_detected) {
-            //ESP_LOGI(TAG, "Running inference pipeline components...");
-            int64_t start_time = esp_timer_get_time();
-            // 3. Run Pipeline A: Heuristic (Geometric)
-            #ifdef RUN_HEURISTIC_PIPELINE
-                heuristic_engine.UpdateMetrics(rgb888_buf, fb->width, fb->height, detected_face);
-                bool is_drowsy_heuristic = heuristic_engine.IsDrowsy();
-                bool is_yawning = heuristic_engine.IsYawning();
-
-                if (is_drowsy_heuristic || is_yawning > 0.75f) {
-                    ESP_LOGW(TAG, "FATIGUE DETECTED!");
-                    gpio_set_level(ALERT_PIN, 1); // Trigger Buzzer
-                } else {
-                    gpio_set_level(ALERT_PIN, 0); // Turn off Buzzer
-                }
-
-                int64_t end_time = esp_timer_get_time();
-                float latency_ms = (end_time - start_time) / 1000.0f;
-                size_t free_sram = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
-                size_t free_psram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
-
-                ESP_LOGI(TAG, "METRICS | EAR: %.3f | MAR: %.3f | Latency: %.2f ms | Free SRAM: %zu B | Free PSRAM: %zu B",
-                     heuristic_engine.GetEAR(),
-                     heuristic_engine.GetMAR(),
-                     latency_ms,
-                     free_sram,
-                     free_psram);
-            #endif
-
-            // 4. Run Pipeline B: Deep Learning (TFLite Micro)
-            #ifdef RUN_DEEP_LEARNING_PIPELINE
-                bool pack_success = dl_classifier.PreprocessAndPack(
-                    rgb888_buf, fb->width, fb->height, detected_face
-                );
-
-                float fatigue_prob = 0.0f;
-                if (pack_success) {
-                    fatigue_prob = dl_classifier.RunInference();
-                }
-
-                if (fatigue_prob > 0.7f) {
-                    ESP_LOGW(TAG, "FATIGUE DETECTED! EAR/MAR threshold or ML Prob: %.2f", fatigue_prob);
-                    gpio_set_level(ALERT_PIN, 1); // Trigger Buzzer
-                } else {
-                    gpio_set_level(ALERT_PIN, 0); // Turn off Buzzer
-                }
-
-                int64_t end_time = esp_timer_get_time();
-                float latency_ms = (end_time - start_time) / 1000.0f;
-                size_t free_sram = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
-                size_t free_psram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
-
-                ESP_LOGI(TAG, "METRICS | Fatigue: %.1f%% | Latency: %.2f ms | Free SRAM: %zu B | Free PSRAM: %zu B",
-                        fatigue_prob * 100.0f,
-                        latency_ms,
-                        free_sram,
-                        free_psram);
-            #endif
-        } else {
-            // Turn off alerts if no face is detected to prevent false positives
-            gpio_set_level(ALERT_PIN, 0);
         }
         
         // Free image buffer
