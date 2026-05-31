@@ -73,7 +73,7 @@ static esp_err_t init_camera() {
     config.pin_reset = RESET_GPIO_NUM;
     config.xclk_freq_hz = 20000000;
     config.pixel_format = PIXFORMAT_RGB565; 
-    config.frame_size = FRAMESIZE_QVGA; // 320x240
+    config.frame_size = FRAMESIZE_SVGA; // 320x240
     config.jpeg_quality = 12;
     config.fb_count = 2; // Requires PSRAM
     config.grab_mode = CAMERA_GRAB_LATEST;
@@ -127,14 +127,14 @@ void dms_task(void *pvParameters) {
             if (!results.empty()) {
                 face_detected = true;
                 dl::detect::result_t best_face = results.front();
-                ESP_LOGI(TAG, "MTMN Box: [%f, %f, %f, %f]", best_face.box[0], best_face.box[1], best_face.box[2], best_face.box[3]);
-                ESP_LOGI(TAG, "MTMN Keypoint Array Size: %d", best_face.keypoint.size());
+                //ESP_LOGI(TAG, "MTMN Box: [%f, %f, %f, %f]", best_face.box[0], best_face.box[1], best_face.box[2], best_face.box[3]);
+                //ESP_LOGI(TAG, "MTMN Keypoint Array Size: %d", best_face.keypoint.size());
 
-                if (best_face.keypoint.size() >= 10) {
-                    ESP_LOGI(TAG, "Left Eye X: %f", best_face.keypoint[0]);
-                } else {
-                    ESP_LOGE(TAG, "CRITICAL: MTMN did not output keypoints!");
-                }
+                //if (best_face.keypoint.size() >= 10) {
+                //    ESP_LOGI(TAG, "Left Eye X: %f", best_face.keypoint[0]);
+                //} else {
+                //    ESP_LOGE(TAG, "CRITICAL: MTMN did not output keypoints!");
+                //}
                 // Populate our unified MTMNFace struct
                 // A. Absolute Bounding Box
                 detected_face.box.x_min = std::max(0, best_face.box[0]);
@@ -199,7 +199,7 @@ void dms_task(void *pvParameters) {
                     fatigue_prob = dl_classifier.RunInference();
                 }
 
-                if (fatigue_prob > 0.75f) {
+                if (fatigue_prob > 0.7f) {
                     ESP_LOGW(TAG, "FATIGUE DETECTED! EAR/MAR threshold or ML Prob: %.2f", fatigue_prob);
                     gpio_set_level(ALERT_PIN, 1); // Trigger Buzzer
                 } else {
