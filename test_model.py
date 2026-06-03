@@ -4,9 +4,9 @@ import cv2
 import time
 from sklearn.metrics import classification_report, confusion_matrix
 
-# --- Configuration ---
+# Configuration
 MODEL_PATH = 'fatigue_model_quantized(4).tflite'
-EYE_TEST_DIR = 'dataset/test' # Update this path
+EYE_TEST_DIR = 'dataset/test'
 IMG_HEIGHT = 96
 IMG_WIDTH = 96
 
@@ -14,7 +14,7 @@ IMG_WIDTH = 96
 REF_IMG_PATH = 'nthu_patched/train/awake/notdrowsy_001_glasses_nonsleepyCombination_87_notdrowsy.jpg'
 ref_img = cv2.imread(REF_IMG_PATH)
 
-# OpenCV loads in BGR, but your dataset loader uses RGB
+# Change from dataset's RGB to OpenCV's BGR
 ref_img = cv2.cvtColor(ref_img, cv2.COLOR_BGR2RGB)
 
 # 2. Slice the bottom half (Rows 48 to 96, Columns 0 to 96)
@@ -51,10 +51,10 @@ def evaluate_quantized_eye_model():
     input_details = interpreter.get_input_details()[0]
     output_details = interpreter.get_output_details()[0]
 
-    # 2. Load the Eye-Only Test Dataset
+    # 2. Load the eye-only test dataset
     test_ds = tf.keras.utils.image_dataset_from_directory(
         EYE_TEST_DIR,
-        image_size=(48, 48), # We can load them directly at patch size
+        image_size=(48, 48),
         batch_size=1,
         shuffle=False,
         color_mode="rgb"
@@ -69,7 +69,7 @@ def evaluate_quantized_eye_model():
 
     print("Starting synthetic composite evaluation...")
 
-    # 3. Iterate, Synthesize, and Evaluate
+    # 3. Iterate, synthesize, evaluate
     for images, labels in test_ds:
         # Build the 96x96 composite from the single eye
         composite_img = build_synthetic_composite(images, neutral_mouth_tensor)
@@ -77,7 +77,7 @@ def evaluate_quantized_eye_model():
         # Normalize the new composite image
         normalized_img = normalization_layer(composite_img).numpy()
 
-        # Apply INT8 Quantization to the input
+        # Apply INT8 quantization to the input
         if input_details['dtype'] == np.int8:
             scale, zero_point = input_details['quantization']
             input_data = (normalized_img / scale + zero_point).astype(np.int8)
@@ -86,7 +86,7 @@ def evaluate_quantized_eye_model():
 
         interpreter.set_tensor(input_details['index'], input_data)
 
-        # Run Inference
+        # Run inference
         start_time = time.perf_counter()
         interpreter.invoke()
         end_time = time.perf_counter()
@@ -104,7 +104,7 @@ def evaluate_quantized_eye_model():
         y_true.append(labels.numpy()[0])
         y_pred.append(pred_class)
 
-    # 4. Print Metrics
+    # 4. Print metrics
     print("\n" + "="*30)
     print("      EVALUATION RESULTS")
     print("="*30)

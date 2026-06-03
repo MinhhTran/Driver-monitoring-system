@@ -13,7 +13,7 @@ class TasksDatasetPreprocessor:
         self.output_dir = Path(output_dir)
         self.model_path = model_path
         
-        # Download the task file if it doesn't exist locally
+        # Download the task file (if hasn't)
         if not os.path.exists(self.model_path):
             print("Downloading Face Landmarker model asset for dataset preprocessor...")
             url = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
@@ -28,7 +28,7 @@ class TasksDatasetPreprocessor:
         )
         self.landmarker = vision.FaceLandmarker.create_from_options(options)
 
-        # Landmark Indices mapping directly to your live embedded execution
+        # Landmark Indices mapping directly for live detection
         self.RIGHT_EYE = [33, 160, 158, 133, 153, 144]
         self.LEFT_EYE = [362, 385, 387, 263, 373, 380]
         self.MOUTH = [78, 308, 13, 14, 61, 291, 0, 17]
@@ -139,7 +139,6 @@ class TasksDatasetPreprocessor:
         print(f"Total Low-Confidence Dropped Matrices: {skipped_count}")
 
 if __name__ == "__main__":
-    # Point directly to your raw data path structure
     RAW_DATASET_DIR = "nthu_cleaned/train"
     COMPOSITE_DATASET_DIR = "nthu_patched_2/train"
     

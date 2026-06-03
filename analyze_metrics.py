@@ -34,10 +34,10 @@ try:
     print(" DMS PIPELINE PERFORMANCE ANALYSIS ")
     print("="*50)
 
-    # Group the data by testing Condition and Pipeline, then apply the metrics calculation
+    # Group the data by testing condition and pipeline, then apply the metrics calculation
     results = data.groupby(['Condition', 'Pipeline']).apply(calculate_metrics).round(2)
     
-    # Print the beautifully formatted table directly to the terminal
+    # Print the table directly to the terminal
     print(results.to_string())
     print("="*50 + "\n")
     results.to_csv('dms_final_analysis.csv')

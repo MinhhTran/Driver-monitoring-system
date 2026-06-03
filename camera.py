@@ -10,14 +10,14 @@ import urllib.request
 import heuristic
 import deep_learning
 
-# 0. DOWNLOAD THE MODEL FILE
+# 0. Download the model file
 MODEL_PATH = 'face_landmarker.task'
 if not os.path.exists(MODEL_PATH):
     print("Downloading Face Landmarker model...")
     url = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
     urllib.request.urlretrieve(url, MODEL_PATH)
 
-# 1. SETUP MEDIAPIPE NEW TASKS API
+# 1. Setup Mediapipe API
 base_options = python.BaseOptions(model_asset_path=MODEL_PATH)
 options = vision.FaceLandmarkerOptions(
     base_options=base_options,
@@ -53,7 +53,7 @@ log_writer.writerow([
     'System_Alert', 'Ground_Truth_Fatigue'
 ])
 
-# Testing State Variables
+# Testing state variables
 current_condition = "Baseline"
 ground_truth_fatigue = False
 #logging_interval = 0.05 # 0.5 means 2 logs per second)
@@ -64,7 +64,7 @@ DL_PROB_THRESHOLD = 0.80      # 80% confidence required per frame
 DL_CONSECUTIVE_FRAMES = 7    # Number of frames to confirm a micro-sleep
 dl_alert = False              # Final alert trigger
 
-# 2. MAIN CAMERA LOOP
+# 2. Main camera loop
 with vision.FaceLandmarker.create_from_options(options) as landmarker:
     cap = cv2.VideoCapture(0)
 

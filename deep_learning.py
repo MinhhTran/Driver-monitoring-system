@@ -14,10 +14,10 @@ class FatigueClassifier:
         self.input_details = self.interpreter.get_input_details()
         self.output_details = self.interpreter.get_output_details()
 
-        # Define MediaPipe indices based on your heuristic logic
+        # Define MediaPipe indices based on heuristic logic
         self.RIGHT_EYE = [33, 160, 158, 133, 153, 144]
         self.LEFT_EYE = [362, 385, 387, 263, 373, 380]
-        # Expanded mouth indices to ensure the whole mouth is captured
+        # Expand mouth indices to ensure the whole mouth is captured
         self.MOUTH = [78, 308, 13, 14, 61, 291, 0, 17] 
 
     def _get_bounding_box(self, landmarks, indices, w, h, padding=10):

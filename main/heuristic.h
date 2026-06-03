@@ -7,7 +7,7 @@
 
 struct MTMNFace;
 
-// Global Threshold Constants
+// Global threshold constants
 extern const float EAR_THRESHOLD;
 extern const float MAR_THRESHOLD;
 extern const float PERCLOS_THRESHOLD;
@@ -20,14 +20,7 @@ struct Point {
     float y; 
 };
 
-// Global Threshold Constants
-extern const float EAR_THRESHOLD;
-extern const float MAR_THRESHOLD;
-extern const float PERCLOS_THRESHOLD;
-extern const int YAWN_FRAME_COUNT;
-extern const int WINDOW_SIZE;
-
-// Stochastic Signal Smoothing Engine
+// Stochastic signal smoothing engine
 class SimpleKalmanFilter {
 public:
     float Q; // Process noise covariance
@@ -41,7 +34,7 @@ public:
     float update(float measurement);
 };
 
-// Encapsulated Heuristic Fatigue Pipeline to prevent global variable leakage
+// heuristic fatigue pipeline
 class HeuristicPipeline {
 public:
     HeuristicPipeline();
@@ -64,7 +57,7 @@ private:
     float ExtractEyeHeight(const uint8_t* frame, int frame_w, int frame_h, int cx, int cy, int roi_h);
     std::vector<Point> ExtractMouthPoints(const uint8_t* frame, int frame_w, int frame_h, Point p0, Point p1, int roi_h);
 
-    // Internal Pipeline State Objects
+    // Internal pipeline state objects
     SimpleKalmanFilter ear_filter_;
     SimpleKalmanFilter mar_filter_;
     SimpleKalmanFilter l_eye_x_filter_;
@@ -76,7 +69,7 @@ private:
     SimpleKalmanFilter m_right_x_filter_;
     SimpleKalmanFilter m_right_y_filter_;
     
-    // Memory-Optimized Ring Buffer for PERCLOS sliding window tracking
+    // Memory-optimized ring buffer for PERCLOS sliding window tracking
     // Replaces standard heap-based std::vector allocation to protect SRAM
     uint8_t frame_history_[1800]; 
     int head_idx_;

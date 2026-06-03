@@ -6,21 +6,21 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
-# --- CONFIGURATION ---
+# Configuration
 MODEL_PATH = 'face_landmarker.task'
 SOURCE_DIR = 'nthu/train'
 OUTPUT_DIR = 'nthu_cleaned/train'
 
-# Strict mathematical thresholds based on your heuristic logic
-EAR_THRESHOLD = 0.21  # Frames <= 0.21 are forced to Fatigue (Closed)
+# Mathematical thresholds based on heuristic logic
+EAR_THRESHOLD = 0.21
 MAR_THRESHOLD = 0.50
 
-# Exact landmark profiles from your Heuristic pipeline
+# Exact landmark profiles heuristic pipeline
 RIGHT_EYE_INDICES = [33, 160, 158, 133, 153, 144]
 LEFT_EYE_INDICES = [362, 385, 387, 263, 373, 380]
 MOUTH_INDICES = [78, 308, 13, 14]
 
-# --- HELPER GEOMETRY FUNCTIONS ---
+# Helper geometry function
 def euclidean_distance(p1, p2):
     return math.hypot(p2[0] - p1[0], p2[1] - p1[1])
 
@@ -46,7 +46,7 @@ def calculate_mar(landmarks, mouth_indices, w, h):
         return 0
     return vertical / (2.0 * horizontal)
 
-# --- INIT MEDIAPIPE IMAGE PIPELINE ---
+# Init mediapipe
 base_options = python.BaseOptions(model_asset_path=MODEL_PATH)
 options = vision.FaceLandmarkerOptions(
     base_options=base_options,
@@ -54,7 +54,7 @@ options = vision.FaceLandmarkerOptions(
     num_faces=1
 )
 
-# Target Subdirectories
+# Target subdirectories
 os.makedirs(os.path.join(OUTPUT_DIR, 'awake'), exist_ok=True)
 os.makedirs(os.path.join(OUTPUT_DIR, 'fatigue'), exist_ok=True)
 os.makedirs(os.path.join(OUTPUT_DIR, 'rejected'), exist_ok=True)
@@ -66,7 +66,7 @@ counter_fatigue = 0
 counter_rejected = 0
 
 with vision.FaceLandmarker.create_from_options(options) as landmarker:
-    # Walk through both 'awake' and 'fatigue' polluted source subdirectories
+    # Scan both awake and fatigue source subdirectories
     for root, dirs, files in os.walk(SOURCE_DIR):
         for file in files:
             if not file.lower().endswith(('.jpg', '.jpeg', '.png')):
@@ -95,7 +95,7 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
                 avg_ear = (left_ear + right_ear) / 2.0
                 mar = calculate_mar(face_landmarks, MOUTH_INDICES, w, h)
                 
-                # Binary Re-routing based on physical eye tracking state
+                # Re-routing based on eye tracking state
                 if avg_ear <= EAR_THRESHOLD or mar > MAR_THRESHOLD:
                     dest_path = os.path.join(OUTPUT_DIR, 'fatigue', file)
                     shutil.copy(img_path, dest_path)
@@ -105,7 +105,7 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
                     shutil.copy(img_path, dest_path)
                     counter_awake += 1
             else:
-                # If an adverse lighting artifact breaks landmarking, isolate it
+                # If landmarking breaks isolate it
                 dest_path = os.path.join(OUTPUT_DIR, 'rejected', file)
                 shutil.copy(img_path, dest_path)
                 counter_rejected += 1
@@ -113,7 +113,7 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
 print("\n" + "="*40)
 print("DATASET FILTERING COMPLETE")
 print("="*40)
-print(f"True Awake Frames (Eyes Open):   {counter_awake}")
+print(f"True Awake Frames (Eyes Open): {counter_awake}")
 print(f"True Fatigue Frames (Eyes Closed): {counter_fatigue}")
-print(f"Rejected Frames (No Landmarks):  {counter_rejected}")
+print(f"Rejected Frames (No Landmarks): {counter_rejected}")
 print(f"Cleaned output directory saved at: {OUTPUT_DIR}")

@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "esp_log.h"
 
-// Definition of Thresholds
+// Set up thresholds
 const float EAR_THRESHOLD = 0.20f;
 const float MAR_THRESHOLD = 0.50f;
 const float PERCLOS_THRESHOLD = 0.15f;
@@ -37,7 +37,7 @@ HeuristicPipeline::HeuristicPipeline()
       yawn_counter_(0),
       last_smoothed_ear_(0.3f),
       last_smoothed_mar_(0.1f) {
-    // Zero-out the rolling buffer safely on setup
+    // Zero-out the rolling buffer
     for(int i = 0; i < WINDOW_SIZE; ++i) frame_history_[i] = 0;
 }
 
@@ -103,14 +103,14 @@ std::vector<Point> HeuristicPipeline::ExtractMouthPoints(const uint8_t* frame, i
     int cy = (int)((p0.y + p1.y) / 2);
     int half_h = roi_h / 2;
 
-    // Calculate Adaptive Threshold: Find average brightness of the vertical column
+    // Calculate adaptive Threshold: Find average brightness of the vertical column
     long sum_gray = 0;
     int count = 0;
     for (int y = cy - half_h; y <= cy + half_h; ++y) {
         sum_gray += GetPixelGray(frame, frame_w, frame_h, cx, y);
         count++;
     }
-    // "Dark cavity" is defined as significantly darker than the local average
+    // Dark cavity is defined as significantly darker than the local average
     uint8_t threshold = (sum_gray / count) * 0.85f; 
 
     // Scan down the center line to find top lip (first dark pixel) and bottom lip (last dark pixel)
@@ -125,7 +125,7 @@ std::vector<Point> HeuristicPipeline::ExtractMouthPoints(const uint8_t* frame, i
                 top_lip_y = y;
                 found_top = true;
             }
-            bot_lip_y = y; // Keeps updating until we leave the cavity
+            bot_lip_y = y; // Keeps updating until bottom lip
         }
     }
 
@@ -165,22 +165,22 @@ void HeuristicPipeline::UpdateMetrics(const uint8_t* frame_buffer, int frame_w, 
         {(float)r_eye_cx, (float)r_eye_cy}
     );
 
-    // 3. Extract Points via Gradients
+    // 3. Extract points via gradients
     float l_eye_height = ExtractEyeHeight(frame_buffer, frame_w, frame_h, l_eye_cx, l_eye_cy, eye_roi_h);
     float r_eye_height = ExtractEyeHeight(frame_buffer, frame_w, frame_h, r_eye_cx, r_eye_cy, eye_roi_h);
     std::vector<Point> mouth_pts = ExtractMouthPoints(frame_buffer, frame_w, frame_h, m_left, m_right, mouth_roi_h);
 
-    // 4. Calculate Raw Ratios
+    // 4. Calculate raw ratios
     float l_ear = CalculateEar(l_eye_height, inter_ocular_dist);
     float r_ear = CalculateEar(r_eye_height, inter_ocular_dist);
     float raw_ear = (l_ear + r_ear) / 2.0f;
     float raw_mar = CalculateMar(mouth_pts);
 
-    // 5. Continuous Stochastic Smoothing
+    // 5. Continuous stochastic smoothing
     last_smoothed_ear_ = ear_filter_.update(raw_ear);
     last_smoothed_mar_ = mar_filter_.update(raw_mar);
 
-    // 6. Ring Buffer Update for PERCLOS (O(1) Execution Window)
+    // 6. Ring buffer update for PERCLOS
     uint8_t current_eye_closed = (last_smoothed_ear_ < EAR_THRESHOLD) ? 1 : 0;
     if (total_elements_ == WINDOW_SIZE) {
         closed_frame_sum_ -= frame_history_[head_idx_];
@@ -191,7 +191,7 @@ void HeuristicPipeline::UpdateMetrics(const uint8_t* frame_buffer, int frame_w, 
     closed_frame_sum_ += current_eye_closed;
     head_idx_ = (head_idx_ + 1) % WINDOW_SIZE;
 
-    // 7. Yawning Track Frame Logic
+    // 7. Yawning track frame logic
     if (last_smoothed_mar_ > MAR_THRESHOLD) {
         yawn_counter_++;
     } else {

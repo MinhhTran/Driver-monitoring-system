@@ -44,7 +44,7 @@ bool FatigueClassifier::Init() {
     
     // Build the structural Micro Interpreter
     tensor_arena_ = (uint8_t*)heap_caps_aligned_alloc(
-        16, // Strict 16-Byte alignment for TFLite Micro SIMD operations
+        16, // 16-Byte alignment for TFLite Micro SIMD operations
         kTensorArenaSize, 
         MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT
     );
@@ -155,7 +155,7 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
 
     //DumpHexBuffer("RIGHT_EYE_PATCH", r_eye_patch, 48 * 48 * 3);
     
-    // 4. Dense Stitched Vector Compositing directly into the input tensor buffer (96x96x3)
+    // 4. Dense stiched vector composite directly into the input tensor buffer (96x96x3)
     int8_t* tensor_input_ptr = input_tensor_->data.int8;
     float input_scale = input_tensor_->params.scale;
     int32_t input_zero_point = input_tensor_->params.zero_point;
@@ -180,7 +180,7 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
             // Grayscale transformation trick matching Python side configuration
             uint8_t gray = static_cast<uint8_t>(0.299f * r + 0.587f * g + 0.114f * b);
 
-            // Replicate Gray across 3 channels, scale normalize (0.0 - 1.0f) and convert to INT8
+            // Replicate grayscale across 3 channels, scale normalize (0.0 - 1.0f) and convert to INT8
             float normalized_val = static_cast<float>(gray) / 255.0f;
             int32_t calc_val = static_cast<int32_t>(std::round(normalized_val / input_scale) + input_zero_point);
             calc_val = std::max(static_cast<int32_t>(-128), std::min(static_cast<int32_t>(127), calc_val));
@@ -212,13 +212,13 @@ bool FatigueClassifier::PreprocessAndPack(const uint8_t* frame_buffer, int frame
 }
 
 float FatigueClassifier::RunInference() {
-    // Invoke the Interpreter onto the hardware layers
+    // Invoke the interpreter onto the hardware layers
     if (interpreter_->Invoke() != kTfLiteOk) {
         MicroPrintf("Inference Engine Invoke Fault!");
         return -1.0f;
     }
 
-    // Unpack INT8 quantized raw layer scalar value into Dequantized Standard Probabilities
+    // Unpack INT8 quantized raw layer scalar value
     int8_t quantized_output = output_tensor_->data.int8[0];
     float output_scale = output_tensor_->params.scale;
     int32_t output_zero_point = output_tensor_->params.zero_point;

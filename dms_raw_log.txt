@@ -1,0 +1,280 @@
+Executing action: flash
+Serial port /dev/ttyACM0
+Connecting...
+Detecting chip type... ESP32-S3
+Running ninja in directory /root/esp_project/DMS/build
+Executing "ninja flash"...
+[1/5] cd /root/esp_project/DMS/build/esp-idf/esptool_py && /root/.espressif/python_env/idf5.1_py3.10_env/bin/python /root/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /root/esp_project/DMS/build/partition_table/partition-table.bin /root/esp_project/DMS/build/Driver-monitoring-system.bin
+Driver-monitoring-system.bin binary size 0x1ba410 bytes. Smallest app partition is 0x300000 bytes. 0x145bf0 bytes (42%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] cd /root/esp_project/DMS/build/bootloader/esp-idf/esptool_py && /root/.espressif/python_env/idf5.1_py3.10_env/bin/python /root/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 /root/esp_project/DMS/build/bootloader/bootloader.bin
+Bootloader binary size 0x5400 bytes. 0x2c00 bytes (34%) free.
+[2/3] cd /root/esp/esp-idf/components/esptool_py && /usr/bin/cmake -D IDF_PATH=/root/esp/esp-idf -D "SERIAL_TOOL=/root/.espressif/python_env/idf5.1_py3.10_env/bin/python;;/root/esp/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32s3" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D WORKING_DIRECTORY=/root/esp_project/DMS/build -P /root/esp/esp-idf/components/esptool_py/run_serial_tool.cmake
+esptool.py --chip esp32s3 -p /dev/ttyACM0 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 80m --flash_size 8MB 0x0 bootloader/bootloader.bin 0x10000 Driver-monitoring-system.bin 0x8000 partition_table/partition-table.bin 0xd000 ota_data_initial.bin
+esptool.py v4.11.0
+Serial port /dev/ttyACM0
+Connecting...
+Chip is ESP32-S3 (QFN56) (revision v0.2)
+Features: WiFi, BLE, Embedded PSRAM 8MB (AP_3v3)
+Crystal is 40MHz
+USB mode: USB-Serial/JTAG
+MAC: 10:20:ba:76:f1:0c
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00000000 to 0x00005fff...
+Flash will be erased from 0x00010000 to 0x001cafff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+Flash will be erased from 0x0000d000 to 0x0000efff...
+SHA digest in image updated
+Compressed 21504 bytes to 13605...
+Writing at 0x00000000... (100 %)
+Wrote 21504 bytes (13605 compressed) at 0x00000000 in 0.4 seconds (effective 469.2 kbit/s)...
+Hash of data verified.
+Compressed 1811472 bytes to 1130055...
+Writing at 0x00010000... (1 %)
+Writing at 0x000190a7... (2 %)
+Writing at 0x0001d4b7... (4 %)
+Writing at 0x0002195e... (5 %)
+Writing at 0x00025ec1... (7 %)
+Writing at 0x0002a344... (8 %)
+Writing at 0x0002e7a9... (10 %)
+Writing at 0x00032b6b... (11 %)
+Writing at 0x00036ef3... (13 %)
+Writing at 0x0003b410... (14 %)
+Writing at 0x0003f8f6... (15 %)
+Writing at 0x00043cdc... (17 %)
+Writing at 0x0004848c... (18 %)
+Writing at 0x0004c859... (20 %)
+Writing at 0x00050d38... (21 %)
+Writing at 0x0005525b... (23 %)
+Writing at 0x000596ec... (24 %)
+Writing at 0x0005da14... (26 %)
+Writing at 0x00061d32... (27 %)
+Writing at 0x00066055... (28 %)
+Writing at 0x0006a388... (30 %)
+Writing at 0x0006e6a5... (31 %)
+Writing at 0x000729b1... (33 %)
+Writing at 0x00076cf4... (34 %)
+Writing at 0x0007af18... (36 %)
+Writing at 0x0008a670... (37 %)
+Writing at 0x00098db9... (39 %)
+Writing at 0x000a6d61... (40 %)
+Writing at 0x000b3f50... (42 %)
+Writing at 0x000bc5ec... (43 %)
+Writing at 0x000c497e... (44 %)
+Writing at 0x000c8d8d... (46 %)
+Writing at 0x000cd154... (47 %)
+Writing at 0x000d2096... (49 %)
+Writing at 0x000d6d29... (50 %)
+Writing at 0x000db8a0... (52 %)
+Writing at 0x000e0468... (53 %)
+Writing at 0x000e51fc... (55 %)
+Writing at 0x000e9c69... (56 %)
+Writing at 0x000ee098... (57 %)
+Writing at 0x000f24db... (59 %)
+Writing at 0x000f6834... (60 %)
+Writing at 0x000faa0c... (62 %)
+Writing at 0x000fee43... (63 %)
+Writing at 0x00103170... (65 %)
+Writing at 0x001128b4... (66 %)
+Writing at 0x0011cb45... (68 %)
+Writing at 0x001228fd... (69 %)
+Writing at 0x00128bbd... (71 %)
+Writing at 0x0012e243... (72 %)
+Writing at 0x001335c5... (73 %)
+Writing at 0x00138498... (75 %)
+Writing at 0x0013d675... (76 %)
+Writing at 0x00142491... (78 %)
+Writing at 0x00148bd9... (79 %)
+Writing at 0x001504ff... (81 %)
+Writing at 0x0015644e... (82 %)
+Writing at 0x0015db57... (84 %)
+Writing at 0x00165c49... (85 %)
+Writing at 0x0016d09b... (86 %)
+Writing at 0x00175d62... (88 %)
+Writing at 0x0017c62e... (89 %)
+Writing at 0x00183521... (91 %)
+Writing at 0x00189138... (92 %)
+Writing at 0x0018f8dd... (94 %)
+Writing at 0x00197476... (95 %)
+Writing at 0x0019f089... (97 %)
+Writing at 0x001be931... (98 %)
+Writing at 0x001c4386... (100 %)
+Wrote 1811472 bytes (1130055 compressed) at 0x00010000 in 13.6 seconds (effective 1068.9 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 122...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (122 compressed) at 0x00008000 in 0.0 seconds (effective 546.8 kbit/s)...
+Hash of data verified.
+Compressed 8192 bytes to 31...
+Writing at 0x0000d000... (100 %)
+Wrote 8192 bytes (31 compressed) at 0x0000d000 in 0.1 seconds (effective 869.4 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...
+Executing action: monitor
+Running idf_monitor in directory /root/esp_project/DMS
+Executing "/root/.espressif/python_env/idf5.1_py3.10_env/bin/python /root/esp/esp-idf/tools/idf_monitor.py -p /dev/ttyACM0 -b 115200 --toolchain-prefix xtensa-esp32s3-elf- --target esp32s3 --revision 0 /root/esp_project/DMS/build/Driver-monitoring-system.elf -m '/root/.espressif/python_env/idf5.1_py3.10_env/bin/python' '/root/esp/esp-idf/tools/idf.py'"...
+[0;32mI (109) esp_image: segment 0: paddr=00010020 vaddr=3c0a00ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x15 (USB_UART_CHIP_RESET),boot:0x8 (SPI_FAST_FLASH_BOOT)
+Saved PC:0x40056f6f
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce3818,len:0x181c
+load:0x403c9700,len:0x4
+load:0x403c9704,len:0xc30
+load:0x403cc700,len:0x2f48
+entry 0x403c990c
+[0;32mI (26) boot: ESP-IDF v5.1.7-1-g4b1ae715b8 2nd stage bootloader[0m
+[0;32mI (27) boot: compile time May 31 2026 18:38:13[0m
+[0;32mI (27) boot: Multicore bootloader[0m
+[0;32mI (31) boot: chip revision: v0.2[0m
+[0;32mI (35) boot: efuse block revision: v1.3[0m
+[0;32mI (39) boot.esp32s3: Boot SPI Speed : 80MHz[0m
+[0;32mI (44) boot.esp32s3: SPI Mode       : DIO[0m
+[0;32mI (49) boot.esp32s3: SPI Flash Size : 8MB[0m
+[0;32mI (53) boot: Enabling RNG early entropy source...[0m
+[0;32mI (59) boot: Partition Table:[0m
+[0;32mI (62) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (70) boot:  0 nvs              WiFi data        01 02 00009000 00004000[0m
+[0;32mI (77) boot:  1 otadata          OTA data         01 00 0000d000 00002000[0m
+[0;32mI (85) boot:  2 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (92) boot:  3 factory          factory app      00 00 00010000 00300000[0m
+[0;32mI (100) boot: End of partition table[0m
+[0;32mI (104) boot: Defaulting to factory image[0m
+[0;32mI (109) esp_image: segment 0: paddr=00010020 vaddr=3c0a0020 size=1050e8h (1069288) map[0m
+[0;32mI (312) esp_image: segment 1: paddr=00115110 vaddr=3fc94a00 size=053b8h ( 21432) load[0m
+[0;32mI (317) esp_image: segment 2: paddr=0011a4d0 vaddr=40374000 size=05b48h ( 23368) load[0m
+[0;32mI (324) esp_image: segment 3: paddr=00120020 vaddr=42000020 size=9f53ch (652604) map[0m
+[0;32mI (446) esp_image: segment 4: paddr=001bf564 vaddr=40379b48 size=0ae80h ( 44672) load[0m
+[0;32mI (463) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (464) boot: Disabling RNG early entropy source...[0m
+[0;32mI (475) cpu_start: Multicore app[0m
+[0;32mI (476) octal_psram: vendor id    : 0x0d (AP)[0m
+[0;32mI (476) octal_psram: dev id       : 0x02 (generation 3)[0m
+[0;32mI (479) octal_psram: density      : 0x03 (64 Mbit)[0m
+[0;32mI (484) octal_psram: good-die     : 0x01 (Pass)[0m
+[0;32mI (489) octal_psram: Latency      : 0x01 (Fixed)[0m
+[0;32mI (495) octal_psram: VCC          : 0x01 (3V)[0m
+[0;32mI (500) octal_psram: SRF          : 0x01 (Fast Refresh)[0m
+[0;32mI (506) octal_psram: BurstType    : 0x01 (Hybrid Wrap)[0m
+[0;32mI (511) octal_psram: BurstLen     : 0x01 (32 Byte)[0m
+[0;32mI (517) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)[0m
+[0;32mI (523) octal_psram: DriveStrength: 0x00 (1/1)[0m
+[0;32mI (529) MSPI Timing: PSRAM timing tuning index: 5[0m
+[0;32mI (534) esp_psram: Found 8MB PSRAM device[0m
+[0;32mI (538) esp_psram: Speed: 80MHz[0m
+[0;32mI (542) cpu_start: Pro cpu up.[0m
+[0;32mI (546) cpu_start: Starting app cpu, entry point is 0x40375640[0m
+[0;32mI (0) cpu_start: App cpu up.[0m
+[0;32mI (1005) esp_psram: SPI SRAM memory test OK[0m
+[0;32mI (1013) cpu_start: Pro cpu start user code[0m
+[0;32mI (1013) cpu_start: cpu freq: 240000000 Hz[0m
+[0;32mI (1014) cpu_start: Application information:[0m
+[0;32mI (1017) cpu_start: Project name:     Driver-monitoring-system[0m
+[0;32mI (1023) cpu_start: App version:      042993f[0m
+[0;32mI (1028) cpu_start: Compile time:     May 31 2026 21:09:15[0m
+[0;32mI (1034) cpu_start: ELF file SHA256:  29b3f2829c8d3afa...[0m
+[0;32mI (1041) cpu_start: ESP-IDF:          v5.1.7-1-g4b1ae715b8[0m
+[0;32mI (1047) cpu_start: Min chip rev:     v0.0[0m
+[0;32mI (1051) cpu_start: Max chip rev:     v0.99 [0m
+[0;32mI (1056) cpu_start: Chip rev:         v0.2[0m
+[0;32mI (1061) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (1069) heap_init: At 3FC9E630 len 0004B0E0 (300 KiB): DRAM[0m
+[0;32mI (1075) heap_init: At 3FCE9710 len 00005724 (21 KiB): STACK/DRAM[0m
+[0;32mI (1082) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM[0m
+[0;32mI (1088) heap_init: At 600FE010 len 00001FD8 (7 KiB): RTCRAM[0m
+[0;32mI (1094) esp_psram: Adding pool of 8192K of PSRAM memory to heap allocator[0m
+[0;32mI (1102) spi_flash: detected chip: gd[0m
+[0;32mI (1106) spi_flash: flash io: dio[0m
+[0;32mI (1118) sleep: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (1118) sleep: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (1124) app_start: Starting scheduler on CPU0[0m
+[0;32mI (1129) app_start: Starting scheduler on CPU1[0m
+[0;32mI (1129) main_task: Started on CPU0[0m
+[0;32mI (1139) esp_psram: Reserving pool of 32K of internal memory for DMA/internal allocations[0m
+[0;32mI (1149) main_task: Calling app_main()[0m
+[0;32mI (1149) DMS_MAIN: Starting ESP32-S3 Driver Monitoring System[0m
+[0;32mI (1159) gpio: GPIO[21]| InputEn: 0| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (1169) s3 ll_cam: DMA Channel=0[0m
+[0;32mI (1169) cam_hal: cam init ok[0m
+[0;32mI (1179) sccb: pin_sda 40 pin_scl 39[0m
+[0;32mI (1179) sccb: sccb_i2c_port=1[0m
+[0;32mI (1189) camera: Camera PID=0x3660 VER=0x00 MIDL=0x00 MIDH=0x00[0m
+[0;32mI (1189) camera: Detected OV3660 camera[0m
+[0;32mI (1199) camera: Detected camera at address=0x3c[0m
+[0;32mI (1509) cam_hal: PSRAM DMA mode disabled[0m
+[0;32mI (1509) s3 ll_cam: node_size: 3200, nodes_per_line: 1, lines_per_node: 2[0m
+[0;32mI (1509) s3 ll_cam: dma_half_buffer_min:  3200, dma_half_buffer: 16000, lines_per_half_buffer: 10, dma_buffer_size: 32000[0m
+[0;32mI (1519) cam_hal: buffer_size: 32000, half_buffer_size: 16000, node_buffer_size: 3200, node_cnt: 10, total_cnt: 60[0m
+[0;32mI (1529) cam_hal: Allocating 960000 Byte frame buffer in PSRAM[0m
+[0;32mI (1539) cam_hal: Allocating 960000 Byte frame buffer in PSRAM[0m
+[0;32mI (1539) cam_hal: cam config ok[0m
+[0;32mI (1559) ov3660: Calculated VCO: 80000000 Hz, PLLCLK: 40000000 Hz, SYSCLK: 10000000 Hz, PCLK: 10000000 Hz[0m
+[0;32mI (1629) DMS_MAIN: TFLite Micro loaded successfully.[0m
+[0;32mI (1629) DMS_MAIN: DMS Task Successfully Allocated and Spawned in PSRAM.[0m
+[0;32mI (1629) DMS_MAIN: DMS Task Started[0m
+[0;32mI (1629) main_task: Returned from app_main()[0m
+[0;32mI (2439) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (2679) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (2979) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (3219) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (3519) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (3759) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (4059) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (4299) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (4599) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (4879) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (5369) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (5369) DMS_MAIN: METRICS | EAR: 0.763 | MAR: 0.000 | Latency: 0.31 ms | Free SRAM: 266343 B | Free PSRAM: 3489436 B[0m
+[0;32mI (5679) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (5679) DMS_MAIN: METRICS | EAR: 0.601 | MAR: 0.000 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (5979) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (5979) DMS_MAIN: METRICS | EAR: 0.634 | MAR: 0.000 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (6279) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (6289) DMS_MAIN: METRICS | EAR: 0.567 | MAR: 0.000 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (6589) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (6589) DMS_MAIN: METRICS | EAR: 0.501 | MAR: 0.000 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (6889) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (6889) DMS_MAIN: METRICS | EAR: 0.459 | MAR: 0.000 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (7189) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (7189) DMS_MAIN: METRICS | EAR: 0.451 | MAR: 0.000 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (7499) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (7499) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (7499) DMS_MAIN: METRICS | EAR: 0.453 | MAR: 0.000 | Latency: 0.32 ms | Free SRAM: 266247 B | Free PSRAM: 3489436 B[0m
+[0;32mI (7759) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (7759) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (7759) DMS_MAIN: METRICS | EAR: 0.445 | MAR: 0.000 | Latency: 0.33 ms | Free SRAM: 266327 B | Free PSRAM: 3489436 B[0m
+[0;32mI (8019) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (8019) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 3/10)[0m
+[0;32mI (8029) DMS_MAIN: METRICS | EAR: 0.443 | MAR: 0.000 | Latency: 0.32 ms | Free SRAM: 266327 B | Free PSRAM: 3489436 B[0m
+[0;32mI (8289) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (8289) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 4/10)[0m
+[0;32mI (8289) DMS_MAIN: METRICS | EAR: 0.444 | MAR: 0.000 | Latency: 0.33 ms | Free SRAM: 266327 B | Free PSRAM: 3489436 B[0m
+[0;32mI (8559) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (8569) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 5/10)[0m
+[0;32mI (8569) DMS_MAIN: METRICS | EAR: 0.446 | MAR: 0.000 | Latency: 0.32 ms | Free SRAM: 266327 B | Free PSRAM: 3489436 B[0m
+[0;32mI (8829) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (8829) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 6/10)[0m
+[0;32mI (8829) DMS_MAIN: METRICS | EAR: 0.461 | MAR: 0.000 | Latency: 0.33 ms | Free SRAM: 266327 B | Free PSRAM: 3489436 B[0m
+[0;32mI (9089) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (9089) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 7/10)[0m
+[0;32mI (9089) DMS_MAIN: METRICS | EAR: 0.447 | MAR: 0.000 | Latency: 0.33 ms | Free SRAM: 266327 B | Free PSRAM: 3489436 B[0m
+[0;32mI (9509) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (9509) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 8/10)[0m
+[0;32mI (9509) DMS_MAIN: METRICS | EAR: 0.447 | MAR: 0.000 | Latency: 0.33 ms | Free SRAM: 266247 B | Free PSRAM: 3489436 B[0m
+[0;32mI (9819) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (9819) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 9/10)[0m
+[0;32mI (9819) DMS_MAIN: METRICS | EAR: 0.450 | MAR: 0.000 | Latency: 0.32 ms | Free SRAM: 266247 B | Free PSRAM: 3489436 B[0m
+[0;32mI (10129) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (10129) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 10/10)[0m
+[0;32mI (10129) DMS_MAIN: METRICS | EAR: 0.458 | MAR: 0.000 | Latency: 0.44 ms | Free SRAM: 266247 B | Free PSRAM: 3489436 B[0m
+[0;32mI (10389) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (10639) DMS_MAIN: Inference complete. Faces found: 0[0m
+Done

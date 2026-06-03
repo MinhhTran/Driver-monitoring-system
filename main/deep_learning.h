@@ -8,7 +8,7 @@
 #include "tensorflow/lite/micro/system_setup.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-// Unified Struct for Facial Bounding Boxes to prevent dynamic allocation
+// Unified struct for facial bounding boxes to prevent dynamic allocation
 struct BBox {
     int x_min;
     int y_min;

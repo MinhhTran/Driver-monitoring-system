@@ -2,6 +2,7 @@
 #include <vector>
 #include <list>
 #include <inttypes.h>
+#include <fcntl.h>
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "esp_camera.h"
@@ -19,9 +20,7 @@
 
 static const char *TAG = "DMS_MAIN";
 
-// ==========================================
 // Hardware Configuration (XIAO ESP32-S3 Sense)
-// ==========================================
 #define PWDN_GPIO_NUM     -1
 #define RESET_GPIO_NUM    -1
 #define XCLK_GPIO_NUM     10
@@ -39,18 +38,14 @@ static const char *TAG = "DMS_MAIN";
 #define HREF_GPIO_NUM     47
 #define PCLK_GPIO_NUM     13
 
-// Alert Pin (e.g., Active Buzzer or LED)
+// Alert Pin
 #define ALERT_PIN GPIO_NUM_21
 
-// ==========================================
 // Global Pipeline Objects
-// ==========================================
 HeuristicPipeline heuristic_engine;
 FatigueClassifier dl_classifier;
 
-// ==========================================
 // Camera Initialization
-// ==========================================
 static esp_err_t init_camera() {
     camera_config_t config;
     config.ledc_channel = LEDC_CHANNEL_0;
@@ -93,7 +88,7 @@ static esp_err_t init_camera() {
         // 1. Lighting and Glare Control
         s->set_brightness(s, 2);     // +2: Brighten to reveal eyes behind glasses frames
         s->set_contrast(s, -1);      // -1: Soften harsh shadows that trick the model
-        s->set_saturation(s, -1);    // -1: Flatten colors (AI models prefer this)
+        s->set_saturation(s, -1);    // -1: Flatten colors
         
         // 2. Ensure Auto-Exposure is handling cabin light changes
         s->set_exposure_ctrl(s, 1);  // 1 = Enable auto exposure
@@ -107,9 +102,7 @@ static esp_err_t init_camera() {
     return ESP_OK;
 }
 
-// ==========================================
 // Main Execution Loop
-// ==========================================
 //#define RUN_HEURISTIC_PIPELINE
 #define RUN_DEEP_LEARNING_PIPELINE
 
@@ -142,7 +135,7 @@ void dms_task(void *pvParameters) {
             //    rgb888_buf, {fb->height, fb->width, 3}
             //);
             static int frames_since_last_detection = 0;
-            const int MAX_TRACKING_FRAMES = 10; // At ~10 FPS, this is 1 second of yawning/glare forgiveness
+            const int MAX_TRACKING_FRAMES = 10;
             static dl::detect::result_t last_known_face; 
             static bool has_last_known_face = false;
 
@@ -162,7 +155,7 @@ void dms_task(void *pvParameters) {
                 //if (best_face.keypoint.size() >= 10) {
                 //    ESP_LOGI(TAG, "Left Eye X: %f", best_face.keypoint[0]);
                 //} else {
-                //    ESP_LOGE(TAG, "CRITICAL: MTMN did not output keypoints!");
+                //    ESP_LOGE(TAG, "MTMN did not output keypoints!");
                 //}
             } else {
                 if (has_last_known_face && frames_since_last_detection < MAX_TRACKING_FRAMES) {
@@ -171,7 +164,7 @@ void dms_task(void *pvParameters) {
                     best_face = last_known_face; // Restore the cached bounding box & keypoints
                     frames_since_last_detection++;
                 } else {
-                    has_last_known_face = false; // Reset the cache just to be safe
+                    has_last_known_face = false; // Reset the cache
                     face_detected = false;
                 }
             }
@@ -181,14 +174,14 @@ void dms_task(void *pvParameters) {
                     ESP_LOGE(TAG, "CRITICAL: MTMN returned invalid keypoint size!");
                     face_detected = false; // Abort this frame
                 } else {
-                    // Populate our unified MTMNFace struct
+                    // Populate unified MTMNFace struct
                     // A. Absolute Bounding Box
                     detected_face.box.x_min = std::max(0, best_face.box[0]);
                     detected_face.box.y_min = std::max(0, best_face.box[1]);
                     detected_face.box.x_max = std::min((int)fb->width, best_face.box[2]);
                     detected_face.box.y_max = std::min((int)fb->height, best_face.box[3]);
 
-                    // B. Normalized Keypoints (ESP-DL gives absolute, so we convert them)
+                    // B. Normalized Keypoints
                     // [0-1] Left Eye, [2-3] Right Eye, [4-5] Nose, [6-7] Left Mouth, [8-9] Right Mouth
                     detected_face.left_eye.x    = best_face.keypoint[6] / (float)fb->width;
                     detected_face.left_eye.y    = best_face.keypoint[7] / (float)fb->height;
@@ -203,7 +196,7 @@ void dms_task(void *pvParameters) {
 
                     //ESP_LOGI(TAG, "Running inference pipeline components...");
                     int64_t start_time = esp_timer_get_time();
-                    // 3. Run Pipeline A: Heuristic (Geometric)
+                    // 3. Run Pipeline A
                     #ifdef RUN_HEURISTIC_PIPELINE
                         heuristic_engine.UpdateMetrics(rgb888_buf, fb->width, fb->height, detected_face);
                         bool is_drowsy_heuristic = heuristic_engine.IsDrowsy();
@@ -229,7 +222,7 @@ void dms_task(void *pvParameters) {
                             free_psram);
                     #endif
 
-                    // 4. Run Pipeline B: Deep Learning (TFLite Micro)
+                    // 4. Run Pipeline B
                     #ifdef RUN_DEEP_LEARNING_PIPELINE
                         bool pack_success = dl_classifier.PreprocessAndPack(
                             rgb888_buf, fb->width, fb->height, detected_face
@@ -241,7 +234,7 @@ void dms_task(void *pvParameters) {
                         }
 
                         if (fatigue_prob > 0.7f) {
-                            ESP_LOGW(TAG, "FATIGUE DETECTED! ML Prob: %.2f", fatigue_prob);
+                            ESP_LOGW(TAG, "FATIGUE DETECTED");
                             gpio_set_level(ALERT_PIN, 1); // Trigger Buzzer
                         } else {
                             gpio_set_level(ALERT_PIN, 0); // Turn off Buzzer
@@ -278,9 +271,7 @@ void dms_task(void *pvParameters) {
     }
 }
 
-// ==========================================
 // Application Entry Point
-// ==========================================
 static StaticTask_t dms_task_buffer;
 static StackType_t* dms_task_stack = nullptr;
 const uint32_t dms_stack_size = 8192 * 4;
