@@ -20,7 +20,7 @@
 
 static const char *TAG = "DMS_MAIN";
 
-// Hardware Configuration (XIAO ESP32-S3 Sense)
+// Hardware configuration (XIAO ESP32-S3 Sense)
 #define PWDN_GPIO_NUM     -1
 #define RESET_GPIO_NUM    -1
 #define XCLK_GPIO_NUM     10
@@ -38,14 +38,14 @@ static const char *TAG = "DMS_MAIN";
 #define HREF_GPIO_NUM     47
 #define PCLK_GPIO_NUM     13
 
-// Alert Pin
+// Alert pin
 #define ALERT_PIN GPIO_NUM_21
 
-// Global Pipeline Objects
+// Global pipeline objects
 HeuristicPipeline heuristic_engine;
 FatigueClassifier dl_classifier;
 
-// Camera Initialization
+// Camera initialization
 static esp_err_t init_camera() {
     camera_config_t config;
     config.ledc_channel = LEDC_CHANNEL_0;
@@ -85,12 +85,12 @@ static esp_err_t init_camera() {
     if (s != NULL) {
         ESP_LOGI(TAG, "Applying OV3660 tuning for AI detection");
         
-        // 1. Lighting and Glare Control
+        // 1. Lighting and glare control
         s->set_brightness(s, 2);     // +2: Brighten to reveal eyes behind glasses frames
         s->set_contrast(s, -1);      // -1: Soften harsh shadows that trick the model
         s->set_saturation(s, -1);    // -1: Flatten colors
         
-        // 2. Ensure Auto-Exposure is handling cabin light changes
+        // 2. Ensure auto-exposure is handling cabin light changes
         s->set_exposure_ctrl(s, 1);  // 1 = Enable auto exposure
         s->set_aec2(s, 1);           // 1 = Enable advanced DSP auto exposure
         s->set_gain_ctrl(s, 1);      // 1 = Enable auto gain
@@ -102,7 +102,7 @@ static esp_err_t init_camera() {
     return ESP_OK;
 }
 
-// Main Execution Loop
+// Main execution loop
 //#define RUN_HEURISTIC_PIPELINE
 #define RUN_DEEP_LEARNING_PIPELINE
 
@@ -112,7 +112,7 @@ HumanFaceDetectMNP01 face_detector_stage2(0.3F, 0.3F, 1);
 void dms_task(void *pvParameters) {
     ESP_LOGI(TAG, "DMS Task Started");
     while (true) {
-        // 1. Capture Camera Frame
+        // 1. Capture camera frame
         camera_fb_t *fb = esp_camera_fb_get();
         if (!fb) {
             ESP_LOGE(TAG, "Camera capture failed");
@@ -129,7 +129,7 @@ void dms_task(void *pvParameters) {
             // Convert raw camera format RGB565 to RGB888
             fmt2rgb888(fb->buf, fb->len, fb->format, rgb888_buf);
 
-            // 2. FACE DETECTION & LANDMARK EXTRACTION
+            // 2. Face detection and landmark extraction
             // Run ESP-DL inference on the converted image
             //std::list<dl::detect::result_t> &results = face_detector.infer(
             //    rgb888_buf, {fb->height, fb->width, 3}
@@ -175,13 +175,13 @@ void dms_task(void *pvParameters) {
                     face_detected = false; // Abort this frame
                 } else {
                     // Populate unified MTMNFace struct
-                    // A. Absolute Bounding Box
+                    // A. Absolute bounding box
                     detected_face.box.x_min = std::max(0, best_face.box[0]);
                     detected_face.box.y_min = std::max(0, best_face.box[1]);
                     detected_face.box.x_max = std::min((int)fb->width, best_face.box[2]);
                     detected_face.box.y_max = std::min((int)fb->height, best_face.box[3]);
 
-                    // B. Normalized Keypoints
+                    // B. Normalized keypoints
                     // [0-1] Left Eye, [2-3] Right Eye, [4-5] Nose, [6-7] Left Mouth, [8-9] Right Mouth
                     detected_face.left_eye.x    = best_face.keypoint[6] / (float)fb->width;
                     detected_face.left_eye.y    = best_face.keypoint[7] / (float)fb->height;
@@ -196,7 +196,7 @@ void dms_task(void *pvParameters) {
 
                     //ESP_LOGI(TAG, "Running inference pipeline components...");
                     int64_t start_time = esp_timer_get_time();
-                    // 3. Run Pipeline A
+                    // 3. Run pipeline A
                     #ifdef RUN_HEURISTIC_PIPELINE
                         heuristic_engine.UpdateMetrics(rgb888_buf, fb->width, fb->height, detected_face);
                         bool is_drowsy_heuristic = heuristic_engine.IsDrowsy();
@@ -222,7 +222,7 @@ void dms_task(void *pvParameters) {
                             free_psram);
                     #endif
 
-                    // 4. Run Pipeline B
+                    // 4. Run pipeline B
                     #ifdef RUN_DEEP_LEARNING_PIPELINE
                         bool pack_success = dl_classifier.PreprocessAndPack(
                             rgb888_buf, fb->width, fb->height, detected_face
@@ -235,9 +235,9 @@ void dms_task(void *pvParameters) {
 
                         if (fatigue_prob > 0.7f) {
                             ESP_LOGW(TAG, "FATIGUE DETECTED");
-                            gpio_set_level(ALERT_PIN, 1); // Trigger Buzzer
+                            gpio_set_level(ALERT_PIN, 1); // Trigger buzzer
                         } else {
-                            gpio_set_level(ALERT_PIN, 0); // Turn off Buzzer
+                            gpio_set_level(ALERT_PIN, 0); // Turn off buzzer
                         }
 
                         int64_t end_time = esp_timer_get_time();
@@ -271,7 +271,7 @@ void dms_task(void *pvParameters) {
     }
 }
 
-// Application Entry Point
+// Application entry point
 static StaticTask_t dms_task_buffer;
 static StackType_t* dms_task_stack = nullptr;
 const uint32_t dms_stack_size = 8192 * 4;
@@ -279,18 +279,18 @@ const uint32_t dms_stack_size = 8192 * 4;
 extern "C" void app_main(void) {
     ESP_LOGI(TAG, "Starting ESP32-S3 Driver Monitoring System");
 
-    // Initialize Alert GPIO
+    // Initialize alert GPIO
     gpio_reset_pin(ALERT_PIN);
     gpio_set_direction(ALERT_PIN, GPIO_MODE_OUTPUT);
     gpio_set_level(ALERT_PIN, 0);
 
-    // Initialize Camera
+    // Initialize camera
     if (init_camera() != ESP_OK) {
         ESP_LOGE(TAG, "Halting due to camera failure.");
         return;
     }
 
-    // Initialize Deep Learning Classifier
+    // Initialize dl classifier
     if (!dl_classifier.Init()) {
         ESP_LOGE(TAG, "TFLite Micro Classifier Initialization Failed!");
         return;
