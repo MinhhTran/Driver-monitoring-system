@@ -46,6 +46,9 @@ public:
     bool IsYawning();
     float GetEAR() const { return last_smoothed_ear_; }
     float GetMAR() const { return last_smoothed_mar_; }
+    float GetPerclos() const { 
+        return (total_elements_ > 0) ? (float)closed_frame_sum_ / total_elements_ : 0.0f; 
+    }
 
     // Re-exposed calculation methods for internal processing
     static float CalculateEar(float eye_height, float inter_ocular_dist);

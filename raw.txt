@@ -4,12 +4,66 @@ Connecting...
 Detecting chip type... ESP32-S3
 Running ninja in directory /root/esp_project/DMS/build
 Executing "ninja flash"...
-[1/5] cd /root/esp_project/DMS/build/esp-idf/esptool_py && /root/.espressif/python_env/idf5.1_py3.10_env/bin/python /root/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /root/esp_project/DMS/build/partition_table/partition-table.bin /root/esp_project/DMS/build/Driver-monitoring-system.bin
-Driver-monitoring-system.bin binary size 0x1ba420 bytes. Smallest app partition is 0x300000 bytes. 0x145be0 bytes (42%) free.
-[2/5] Performing build step for 'bootloader'
+[1/11] Performing build step for 'bootloader'
 [1/1] cd /root/esp_project/DMS/build/bootloader/esp-idf/esptool_py && /root/.espressif/python_env/idf5.1_py3.10_env/bin/python /root/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 /root/esp_project/DMS/build/bootloader/bootloader.bin
 Bootloader binary size 0x5400 bytes. 0x2c00 bytes (34%) free.
-[2/3] cd /root/esp/esp-idf/components/esptool_py && /usr/bin/cmake -D IDF_PATH=/root/esp/esp-idf -D "SERIAL_TOOL=/root/.espressif/python_env/idf5.1_py3.10_env/bin/python;;/root/esp/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32s3" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D WORKING_DIRECTORY=/root/esp_project/DMS/build -P /root/esp/esp-idf/components/esptool_py/run_serial_tool.cmake
+[2/9] Building CXX object esp-idf/main/CMakeFiles/__idf_main.dir/heuristic.cpp.obj
+/root/esp_project/DMS/main/heuristic.cpp: In member function 'void HeuristicPipeline::UpdateMetrics(const uint8_t*, int, int, const MTMNFace&)':
+/root/esp_project/DMS/main/heuristic.cpp:144:11: warning: unused variable 'raw_m_left_x' [-Wunused-variable]
+  144 |     float raw_m_left_x = face.left_mouth.x * frame_w;
+      |           ^~~~~~~~~~~~
+/root/esp_project/DMS/main/heuristic.cpp:145:11: warning: unused variable 'raw_m_left_y' [-Wunused-variable]
+  145 |     float raw_m_left_y = face.left_mouth.y * frame_h;
+      |           ^~~~~~~~~~~~
+/root/esp_project/DMS/main/heuristic.cpp:146:11: warning: unused variable 'raw_m_right_x' [-Wunused-variable]
+  146 |     float raw_m_right_x = face.right_mouth.x * frame_w;
+      |           ^~~~~~~~~~~~~
+/root/esp_project/DMS/main/heuristic.cpp:147:11: warning: unused variable 'raw_m_right_y' [-Wunused-variable]
+  147 |     float raw_m_right_y = face.right_mouth.y * frame_h;
+      |           ^~~~~~~~~~~~~
+[3/9] Building CXX object esp-idf/main/CMakeFiles/__idf_main.dir/main.cpp.obj
+/root/esp_project/DMS/main/main.cpp:44: warning: "ALERT_PIN" redefined
+   44 | #define ALERT_PIN GPIO_NUM_2
+      | 
+/root/esp_project/DMS/main/main.cpp:42: note: this is the location of the previous definition
+   42 | #define ALERT_PIN GPIO_NUM_21
+      | 
+In file included from /root/esp_project/DMS/managed_components/espressif__esp-dl/include/typedef/dl_variable.hpp:8,
+                 from /root/esp_project/DMS/managed_components/espressif__esp-dl/include/image/dl_image.hpp:8,
+                 from /root/esp_project/DMS/main/main.cpp:15:
+/root/esp_project/DMS/managed_components/espressif__esp-dl/include/tool/dl_tool.hpp: In member function 'void dl::tool::Latency::print()':
+/root/esp_project/DMS/managed_components/espressif__esp-dl/include/tool/dl_tool.hpp:393:37: warning: format '%u' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  393 |                 printf("latency: %15u us\n", this->get_average_period());
+      |                                  ~~~^        ~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                     |                                |
+      |                                     unsigned int                     uint32_t {aka long unsigned int}
+      |                                  %15lu
+/root/esp_project/DMS/managed_components/espressif__esp-dl/include/tool/dl_tool.hpp: In member function 'void dl::tool::Latency::print(const char*)':
+/root/esp_project/DMS/managed_components/espressif__esp-dl/include/tool/dl_tool.hpp:407:32: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  407 |                 printf("%s: %15u us\n", message, this->get_average_period());
+      |                             ~~~^                 ~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                |                                         |
+      |                                unsigned int                              uint32_t {aka long unsigned int}
+      |                             %15lu
+/root/esp_project/DMS/managed_components/espressif__esp-dl/include/tool/dl_tool.hpp: In member function 'void dl::tool::Latency::print(const char*, const char*)':
+/root/esp_project/DMS/managed_components/espressif__esp-dl/include/tool/dl_tool.hpp:422:34: warning: format '%u' expects argument of type 'unsigned int', but argument 4 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  422 |                 printf("%s::%s: %u us\n", prefix, key, this->get_average_period());
+      |                                 ~^                     ~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                  |                                             |
+      |                                  unsigned int                                  uint32_t {aka long unsigned int}
+      |                                 %lu
+[4/9] Linking C static library esp-idf/main/libmain.a
+[5/9] Generating ld/sections.ld
+[6/9] Linking CXX executable Driver-monitoring-system.elf
+[7/9] Generating binary image from built executable
+esptool.py v4.11.0
+Creating esp32s3 image...
+Merged 2 ELF sections
+Successfully created esp32s3 image.
+Generated /root/esp_project/DMS/build/Driver-monitoring-system.bin
+[8/9] cd /root/esp_project/DMS/build/esp-idf/esptool_py && /root/.espressif/python_env/idf5.1_py3.10_env/bin/python /root/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /root/esp_project/DMS/build/partition_table/partition-table.bin /root/esp_project/DMS/build/Driver-monitoring-system.bin
+Driver-monitoring-system.bin binary size 0x1ba750 bytes. Smallest app partition is 0x300000 bytes. 0x1458b0 bytes (42%) free.
+[8/9] cd /root/esp/esp-idf/components/esptool_py && /usr/bin/cmake -D IDF_PATH=/root/esp/esp-idf -D "SERIAL_TOOL=/root/.espressif/python_env/idf5.1_py3.10_env/bin/python;;/root/esp/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32s3" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D WORKING_DIRECTORY=/root/esp_project/DMS/build -P /root/esp/esp-idf/components/esptool_py/run_serial_tool.cmake
 esptool.py --chip esp32s3 -p /dev/ttyACM0 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 80m --flash_size 8MB 0x0 bootloader/bootloader.bin 0x10000 Driver-monitoring-system.bin 0x8000 partition_table/partition-table.bin 0xd000 ota_data_initial.bin
 esptool.py v4.11.0
 Serial port /dev/ttyACM0
@@ -32,87 +86,88 @@ Flash will be erased from 0x0000d000 to 0x0000efff...
 SHA digest in image updated
 Compressed 21504 bytes to 13605...
 Writing at 0x00000000... (100 %)
-Wrote 21504 bytes (13605 compressed) at 0x00000000 in 0.4 seconds (effective 441.3 kbit/s)...
+Wrote 21504 bytes (13605 compressed) at 0x00000000 in 0.4 seconds (effective 445.2 kbit/s)...
 Hash of data verified.
-Compressed 1811488 bytes to 1129915...
+Compressed 1812304 bytes to 1130600...
 Writing at 0x00010000... (1 %)
-Writing at 0x000190ea... (2 %)
-Writing at 0x0001d4df... (4 %)
-Writing at 0x0002198c... (5 %)
-Writing at 0x00025ee9... (7 %)
+Writing at 0x000190e6... (2 %)
+Writing at 0x0001d4dd... (4 %)
+Writing at 0x0002198a... (5 %)
+Writing at 0x00025ee7... (7 %)
 Writing at 0x0002a373... (8 %)
 Writing at 0x0002e7d6... (10 %)
-Writing at 0x00032b9b... (11 %)
-Writing at 0x00036f21... (13 %)
-Writing at 0x0003b43e... (14 %)
-Writing at 0x0003f924... (15 %)
-Writing at 0x00043cf8... (17 %)
+Writing at 0x00032b99... (11 %)
+Writing at 0x00036f22... (12 %)
+Writing at 0x0003b43f... (14 %)
+Writing at 0x0003f925... (15 %)
+Writing at 0x00043cfa... (17 %)
 Writing at 0x000484b0... (18 %)
-Writing at 0x0004c87d... (20 %)
-Writing at 0x00050d53... (21 %)
-Writing at 0x00055278... (23 %)
+Writing at 0x0004c87e... (20 %)
+Writing at 0x00050d54... (21 %)
+Writing at 0x00055279... (22 %)
 Writing at 0x00059712... (24 %)
-Writing at 0x0005da36... (26 %)
+Writing at 0x0005da37... (25 %)
 Writing at 0x00061d53... (27 %)
-Writing at 0x0006607b... (28 %)
-Writing at 0x0006a3ae... (30 %)
-Writing at 0x0006e6cb... (31 %)
-Writing at 0x000729da... (33 %)
-Writing at 0x00076d16... (34 %)
-Writing at 0x0007af3e... (36 %)
-Writing at 0x0008a288... (37 %)
-Writing at 0x00098dcc... (39 %)
+Writing at 0x00066077... (28 %)
+Writing at 0x0006a3ac... (30 %)
+Writing at 0x0006e6c7... (31 %)
+Writing at 0x000729d5... (32 %)
+Writing at 0x00076d14... (34 %)
+Writing at 0x0007af3d... (35 %)
+Writing at 0x0008a289... (37 %)
+Writing at 0x00098dcd... (38 %)
 Writing at 0x000a6d78... (40 %)
-Writing at 0x000b3f63... (42 %)
-Writing at 0x000bc4fd... (43 %)
-Writing at 0x000c49b3... (44 %)
-Writing at 0x000c8dba... (46 %)
-Writing at 0x000cd181... (47 %)
-Writing at 0x000d20ad... (49 %)
-Writing at 0x000d6d39... (50 %)
-Writing at 0x000db8bc... (52 %)
-Writing at 0x000e047e... (53 %)
-Writing at 0x000e5210... (55 %)
-Writing at 0x000e9c93... (56 %)
-Writing at 0x000ee0c0... (57 %)
-Writing at 0x000f2505... (59 %)
-Writing at 0x000f6864... (60 %)
-Writing at 0x000faa3c... (62 %)
-Writing at 0x000fee72... (63 %)
-Writing at 0x001031a1... (65 %)
-Writing at 0x00112708... (66 %)
-Writing at 0x0011cb54... (68 %)
-Writing at 0x0012290d... (69 %)
-Writing at 0x00128bb3... (71 %)
-Writing at 0x0012e1c6... (72 %)
-Writing at 0x00133512... (73 %)
-Writing at 0x00138481... (75 %)
-Writing at 0x0013d6aa... (76 %)
-Writing at 0x001424c6... (78 %)
-Writing at 0x00148d65... (79 %)
-Writing at 0x001505ef... (81 %)
-Writing at 0x001565ec... (82 %)
-Writing at 0x0015debc... (84 %)
-Writing at 0x00165e50... (85 %)
-Writing at 0x0016d14d... (86 %)
-Writing at 0x00175e02... (88 %)
-Writing at 0x0017c708... (89 %)
-Writing at 0x0018356c... (91 %)
-Writing at 0x00189212... (92 %)
-Writing at 0x0018fb4c... (94 %)
-Writing at 0x00197569... (95 %)
-Writing at 0x0019f205... (97 %)
-Writing at 0x001bea28... (98 %)
-Writing at 0x001c4466... (100 %)
-Wrote 1811488 bytes (1129915 compressed) at 0x00010000 in 14.8 seconds (effective 979.4 kbit/s)...
+Writing at 0x000b3f5d... (41 %)
+Writing at 0x000bc54b... (42 %)
+Writing at 0x000c4994... (44 %)
+Writing at 0x000c8d9c... (45 %)
+Writing at 0x000cd163... (47 %)
+Writing at 0x000d2094... (48 %)
+Writing at 0x000d6d22... (50 %)
+Writing at 0x000db8a1... (51 %)
+Writing at 0x000e0468... (52 %)
+Writing at 0x000e51f8... (54 %)
+Writing at 0x000e9c77... (55 %)
+Writing at 0x000ee0aa... (57 %)
+Writing at 0x000f24e9... (58 %)
+Writing at 0x000f6847... (60 %)
+Writing at 0x000faa1c... (61 %)
+Writing at 0x000fee52... (62 %)
+Writing at 0x00103180... (64 %)
+Writing at 0x001127a8... (65 %)
+Writing at 0x0011cb5d... (67 %)
+Writing at 0x0012291d... (68 %)
+Writing at 0x00128bbf... (70 %)
+Writing at 0x0012e1d5... (71 %)
+Writing at 0x0013356e... (72 %)
+Writing at 0x001384d5... (74 %)
+Writing at 0x0013d700... (75 %)
+Writing at 0x00142521... (77 %)
+Writing at 0x00148b17... (78 %)
+Writing at 0x00150554... (80 %)
+Writing at 0x001563d8... (81 %)
+Writing at 0x0015db36... (82 %)
+Writing at 0x00165988... (84 %)
+Writing at 0x0016cf73... (85 %)
+Writing at 0x00175d4f... (87 %)
+Writing at 0x0017c658... (88 %)
+Writing at 0x001835bb... (90 %)
+Writing at 0x001891be... (91 %)
+Writing at 0x0018f97d... (92 %)
+Writing at 0x0019754e... (94 %)
+Writing at 0x0019f0df... (95 %)
+Writing at 0x001be933... (97 %)
+Writing at 0x001c438d... (98 %)
+Writing at 0x001ca6cf... (100 %)
+Wrote 1812304 bytes (1130600 compressed) at 0x00010000 in 14.6 seconds (effective 992.0 kbit/s)...
 Hash of data verified.
 Compressed 3072 bytes to 122...
 Writing at 0x00008000... (100 %)
-Wrote 3072 bytes (122 compressed) at 0x00008000 in 0.1 seconds (effective 480.4 kbit/s)...
+Wrote 3072 bytes (122 compressed) at 0x00008000 in 0.0 seconds (effective 514.4 kbit/s)...
 Hash of data verified.
 Compressed 8192 bytes to 31...
 Writing at 0x0000d000... (100 %)
-Wrote 8192 bytes (31 compressed) at 0x0000d000 in 0.1 seconds (effective 762.8 kbit/s)...
+Wrote 8192 bytes (31 compressed) at 0x0000d000 in 0.1 seconds (effective 812.9 kbit/s)...
 Hash of data verified.
 
 Leaving...
@@ -120,10 +175,10 @@ Hard resetting via RTS pin...
 Executing action: monitor
 Running idf_monitor in directory /root/esp_project/DMS
 Executing "/root/.espressif/python_env/idf5.1_py3.10_env/bin/python /root/esp/esp-idf/tools/idf_monitor.py -p /dev/ttyACM0 -b 115200 --toolchain-prefix xtensa-esp32s3-elf- --target esp32s3 --revision 0 /root/esp_project/DMS/build/Driver-monitoring-system.elf -m '/root/.espressif/python_env/idf5.1_py3.10_env/bin/python' '/root/esp/esp-idf/tools/idf.py'"...
-ESP-ROM:esp32s3-20210327
+[0;32mI (109) esp_image: segment 0: paddr=00010020 vaddr=3c0a00ESP-ROM:esp32s3-20210327
 Build:Mar 27 2021
-rst:0x15 (USB_UART_CHIP_RESET),boot:0x8 (SPI_FAST_FLASH_BOOT)
-Saved PC:0x40056f64
+rst:0x15 (USB_UART_CHIP_RESET),boot:0x2a (SPI_FAST_FLASH_BOOT)
+Saved PC:0x403ce7f5
 SPIWP:0xee
 mode:DIO, clock div:1
 load:0x3fce3818,len:0x181c
@@ -139,20 +194,20 @@ entry 0x403c990c
 [0;32mI (39) boot.esp32s3: Boot SPI Speed : 80MHz[0m
 [0;32mI (44) boot.esp32s3: SPI Mode       : DIO[0m
 [0;32mI (49) boot.esp32s3: SPI Flash Size : 8MB[0m
-[0;32mI (53) boot: Enabling RNG early entropy source...[0m
+[0;32mI (54) boot: Enabling RNG early entropy source...[0m
 [0;32mI (59) boot: Partition Table:[0m
-[0;32mI (62) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (63) boot: ## Label            Usage          Type ST Offset   Length[0m
 [0;32mI (70) boot:  0 nvs              WiFi data        01 02 00009000 00004000[0m
 [0;32mI (77) boot:  1 otadata          OTA data         01 00 0000d000 00002000[0m
 [0;32mI (85) boot:  2 phy_init         RF data          01 01 0000f000 00001000[0m
 [0;32mI (92) boot:  3 factory          factory app      00 00 00010000 00300000[0m
 [0;32mI (100) boot: End of partition table[0m
 [0;32mI (104) boot: Defaulting to factory image[0m
-[0;32mI (109) esp_image: segment 0: paddr=00010020 vaddr=3c0a0020 size=1051a8h (1069480) map[0m
-[0;32mI (312) esp_image: segment 1: paddr=001151d0 vaddr=3fc94a00 size=053b8h ( 21432) load[0m
-[0;32mI (317) esp_image: segment 2: paddr=0011a590 vaddr=40374000 size=05a88h ( 23176) load[0m
-[0;32mI (324) esp_image: segment 3: paddr=00120020 vaddr=42000020 size=9f48ch (652428) map[0m
-[0;32mI (446) esp_image: segment 4: paddr=001bf4b4 vaddr=40379a88 size=0af40h ( 44864) load[0m
+[0;32mI (109) esp_image: segment 0: paddr=00010020 vaddr=3c0a0020 size=105168h (1069416) map[0m
+[0;32mI (312) esp_image: segment 1: paddr=00115190 vaddr=3fc94a00 size=053b8h ( 21432) load[0m
+[0;32mI (317) esp_image: segment 2: paddr=0011a550 vaddr=40374000 size=05ac8h ( 23240) load[0m
+[0;32mI (324) esp_image: segment 3: paddr=00120020 vaddr=42000020 size=9f7fch (653308) map[0m
+[0;32mI (446) esp_image: segment 4: paddr=001bf824 vaddr=40379ac8 size=0af00h ( 44800) load[0m
 [0;32mI (464) boot: Loaded app from partition at offset 0x10000[0m
 [0;32mI (464) boot: Disabling RNG early entropy source...[0m
 [0;32mI (475) cpu_start: Multicore app[0m
@@ -160,11 +215,11 @@ entry 0x403c990c
 [0;32mI (476) octal_psram: dev id       : 0x02 (generation 3)[0m
 [0;32mI (479) octal_psram: density      : 0x03 (64 Mbit)[0m
 [0;32mI (484) octal_psram: good-die     : 0x01 (Pass)[0m
-[0;32mI (489) octal_psram: Latency      : 0x01 (Fixed)[0m
+[0;32mI (490) octal_psram: Latency      : 0x01 (Fixed)[0m
 [0;32mI (495) octal_psram: VCC          : 0x01 (3V)[0m
 [0;32mI (500) octal_psram: SRF          : 0x01 (Fast Refresh)[0m
 [0;32mI (506) octal_psram: BurstType    : 0x01 (Hybrid Wrap)[0m
-[0;32mI (511) octal_psram: BurstLen     : 0x01 (32 Byte)[0m
+[0;32mI (512) octal_psram: BurstLen     : 0x01 (32 Byte)[0m
 [0;32mI (517) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)[0m
 [0;32mI (523) octal_psram: DriveStrength: 0x00 (1/1)[0m
 [0;32mI (529) MSPI Timing: PSRAM timing tuning index: 5[0m
@@ -178,9 +233,9 @@ entry 0x403c990c
 [0;32mI (1014) cpu_start: cpu freq: 240000000 Hz[0m
 [0;32mI (1014) cpu_start: Application information:[0m
 [0;32mI (1017) cpu_start: Project name:     Driver-monitoring-system[0m
-[0;32mI (1023) cpu_start: App version:      50c0897-dirty[0m
-[0;32mI (1029) cpu_start: Compile time:     Jun  3 2026 21:42:28[0m
-[0;32mI (1035) cpu_start: ELF file SHA256:  a24506141ae7ae9c...[0m
+[0;32mI (1024) cpu_start: App version:      b13ac16-dirty[0m
+[0;32mI (1029) cpu_start: Compile time:     Jun  5 2026 01:31:23[0m
+[0;32mI (1035) cpu_start: ELF file SHA256:  f8803e7bb3c2b32d...[0m
 [0;32mI (1041) cpu_start: ESP-IDF:          v5.1.7-1-g4b1ae715b8[0m
 [0;32mI (1047) cpu_start: Min chip rev:     v0.0[0m
 [0;32mI (1052) cpu_start: Max chip rev:     v0.99 [0m
@@ -229,322 +284,762 @@ entry 0x403c990c
 [0;32mI (3760) DMS_MAIN: Inference complete. Faces found: 0[0m
 [0;32mI (4060) DMS_MAIN: Inference complete. Faces found: 0[0m
 [0;32mI (4300) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;32mI (4650) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;32mI (4950) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;32mI (5250) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;32mI (5540) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;32mI (5910) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;32mI (6210) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (6960) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 10.5% | Latency: 754.46 ms | Free SRAM: 266339 B | Free PSRAM: 3489436 B[0m
-[0;32mI (7270) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (8030) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 27.3% | Latency: 754.40 ms | Free SRAM: 266119 B | Free PSRAM: 3489436 B[0m
-[0;32mI (8330) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (9090) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 14.5% | Latency: 754.76 ms | Free SRAM: 266123 B | Free PSRAM: 3489436 B[0m
-[0;32mI (9390) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (10140) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 68.8% | Latency: 755.06 ms | Free SRAM: 266119 B | Free PSRAM: 3489436 B[0m
-[0;32mI (10450) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (11200) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 27.3% | Latency: 755.29 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (11500) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (12250) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 40.2% | Latency: 754.46 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (12550) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (13300) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 17.2% | Latency: 754.46 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (13600) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (14350) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 10.5% | Latency: 754.40 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (14660) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (15410) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 2.3% | Latency: 754.42 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (15720) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (16470) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 8.6% | Latency: 754.66 ms | Free SRAM: 266043 B | Free PSRAM: 3489436 B[0m
-[0;32mI (16780) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (17530) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 23.4% | Latency: 754.94 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (17840) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (18590) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 23.4% | Latency: 755.37 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (18890) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (18890) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;32mI (19640) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 12.5% | Latency: 754.42 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (19940) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (20690) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 8.6% | Latency: 754.39 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (20990) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (21740) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 4.3% | Latency: 754.41 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (22040) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (22800) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 23.4% | Latency: 754.42 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
+[0;32mI (4600) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (4840) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (5140) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (5380) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (5680) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (5920) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (6220) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (6460) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (6760) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (7000) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (7300) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (7540) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (7840) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (8100) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (8380) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (8640) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (8920) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (9180) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (9470) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (9720) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (10010) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (10240) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (10730) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (10980) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (11270) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (11520) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (11810) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (12110) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (12400) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;32mI (12710) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (12710) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.451 | MAR: 0.000 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266355 B | Free PSRAM: 3489436 B[0m
+[0;32mI (13020) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (13020) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.314 | MAR: 0.030 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (13320) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (13330) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.455 | MAR: 0.033 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (13650) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (13650) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (13660) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.470 | MAR: 0.118 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (13970) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (13970) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (13970) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.481 | MAR: 0.177 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (14280) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (14280) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 3/10)[0m
+[0;32mI (14280) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.489 | MAR: 0.148 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (14600) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (14600) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.486 | MAR: 0.192 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (14910) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (14910) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (14920) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.469 | MAR: 0.168 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266243 B | Free PSRAM: 3489436 B[0m
+[0;32mI (15230) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (15230) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (15230) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.461 | MAR: 0.150 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266247 B | Free PSRAM: 3489436 B[0m
+[0;32mI (15540) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (15540) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 3/10)[0m
+[0;32mI (15540) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.462 | MAR: 0.135 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (15860) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (15860) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 4/10)[0m
+[0;32mI (15860) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.436 | MAR: 0.123 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (16170) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (16180) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.448 | MAR: 0.112 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (16480) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (16480) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (16480) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.466 | MAR: 0.108 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (16800) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (16800) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.451 | MAR: 0.133 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (17100) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (17100) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.456 | MAR: 0.155 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (17440) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (17440) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.431 | MAR: 0.174 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (17750) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (17750) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.433 | MAR: 0.193 | PERCLOS: 0.00 | Latency: 0.28 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (18060) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (18060) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.419 | MAR: 0.206 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (18360) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (18360) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.416 | MAR: 0.202 | PERCLOS: 0.00 | Latency: 0.35 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (18700) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (18700) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.427 | MAR: 0.209 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (19010) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (19010) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (19010) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.437 | MAR: 0.216 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (19320) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (19320) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (19320) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.433 | MAR: 0.222 | PERCLOS: 0.00 | Latency: 0.40 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (19640) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (19640) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.431 | MAR: 0.229 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (19960) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (19960) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.444 | MAR: 0.234 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (20270) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (20270) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.447 | MAR: 0.239 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (20580) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (20580) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.449 | MAR: 0.250 | PERCLOS: 0.00 | Latency: 0.28 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (20880) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (20890) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.444 | MAR: 0.259 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (21220) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (21220) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.455 | MAR: 0.263 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (21530) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (21530) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.460 | MAR: 0.267 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (21840) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (21840) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.451 | MAR: 0.273 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (22150) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (22150) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.455 | MAR: 0.276 | PERCLOS: 0.00 | Latency: 0.36 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (22480) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (22480) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.452 | MAR: 0.278 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (22790) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (22790) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.448 | MAR: 0.280 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
 [0;32mI (23100) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (23850) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 20.3% | Latency: 754.66 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (24160) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (24910) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 7.4% | Latency: 754.92 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (25200) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (25200) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;32mI (25960) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 5.9% | Latency: 758.63 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (26250) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (27010) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 20.3% | Latency: 756.67 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (27310) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (28060) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 8.6% | Latency: 754.46 ms | Free SRAM: 266051 B | Free PSRAM: 3489436 B[0m
-[0;32mI (28340) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (28340) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;32mI (29100) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 5.1% | Latency: 758.31 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (29400) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (29400) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
-[0;32mI (30160) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 8.6% | Latency: 754.80 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (30460) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (30460) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 3/10)[0m
-[0;32mI (31220) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 14.5% | Latency: 754.98 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (31510) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (32270) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 31.2% | Latency: 755.34 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (32570) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (33320) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 27.3% | Latency: 754.42 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (33610) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (33610) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;32mI (34370) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 27.3% | Latency: 757.79 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (34650) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (35410) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 35.5% | Latency: 758.29 ms | Free SRAM: 266039 B | Free PSRAM: 3489436 B[0m
-[0;32mI (35710) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (36470) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 14.5% | Latency: 754.75 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (36770) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (37520) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 31.2% | Latency: 754.80 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (37830) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (38580) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 17.2% | Latency: 755.27 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (38880) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (39630) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 8.6% | Latency: 754.38 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (39930) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (40680) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 17.2% | Latency: 754.42 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (40980) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (41730) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 50.0% | Latency: 754.42 ms | Free SRAM: 266051 B | Free PSRAM: 3489436 B[0m
-[0;32mI (42040) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (42040) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;32mI (42800) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 40.2% | Latency: 754.45 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;33mW (42830) DMS_MAIN: GROUND TRUTH CHANGED: FATIGUE[0m
-[0;32mI (43200) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (43200) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
-[0;32mI (43950) DMS_MAIN: METRICS | GT: 1 | Status: FN |Fatigue: 40.2% | Latency: 754.41 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (44240) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (44990) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (44990) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 94.1% | Latency: 757.80 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (45300) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (45300) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;32mI (46050) DMS_MAIN: METRICS | GT: 1 | Status: FN |Fatigue: 64.5% | Latency: 754.37 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (46360) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (46360) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
-[0;33mW (47120) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (47120) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 72.7% | Latency: 754.80 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (47420) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (48180) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (48180) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 72.7% | Latency: 755.04 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (48480) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (49240) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (49240) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 72.7% | Latency: 755.39 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (49540) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (50290) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (50290) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 96.5% | Latency: 755.64 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (50590) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (50590) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;33mW (51350) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (51350) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 91.4% | Latency: 754.86 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (51660) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (52410) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (52410) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 94.1% | Latency: 754.89 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (52710) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (53470) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (53470) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 85.5% | Latency: 757.72 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (53770) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (54520) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (54520) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 82.8% | Latency: 754.85 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (54830) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (55580) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (55590) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 89.5% | Latency: 754.86 ms | Free SRAM: 266051 B | Free PSRAM: 3489436 B[0m
-[0;32mI (55890) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (56650) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (56650) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 95.7% | Latency: 754.89 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (56950) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (57710) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (57710) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 97.7% | Latency: 755.31 ms | Free SRAM: 266055 B | Free PSRAM: 3489436 B[0m
-[0;32mI (58010) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (58010) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;33mW (58770) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (58770) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 94.9% | Latency: 755.47 ms | Free SRAM: 266159 B | Free PSRAM: 3489436 B[0m
-[0;32mI (59050) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (59810) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (59810) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 89.5% | Latency: 760.00 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (60110) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (60110) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;33mW (60870) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (60870) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 85.5% | Latency: 756.85 ms | Free SRAM: 266159 B | Free PSRAM: 3489436 B[0m
-[0;32mI (61170) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (61920) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (61920) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 92.6% | Latency: 754.89 ms | Free SRAM: 266039 B | Free PSRAM: 3489436 B[0m
-[0;32mI (62230) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (62980) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (62980) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 91.4% | Latency: 754.91 ms | Free SRAM: 266039 B | Free PSRAM: 3489436 B[0m
-[0;32mI (63290) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (64040) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (64040) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 96.5% | Latency: 754.86 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (64350) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (65110) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (65110) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 92.6% | Latency: 754.96 ms | Free SRAM: 266055 B | Free PSRAM: 3489436 B[0m
-[0;32mI (65410) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (66160) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (66170) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 98.8% | Latency: 755.41 ms | Free SRAM: 266055 B | Free PSRAM: 3489436 B[0m
-[0;32mI (66470) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (67220) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (67220) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 98.8% | Latency: 755.67 ms | Free SRAM: 266051 B | Free PSRAM: 3489436 B[0m
-[0;33mW (67260) DMS_MAIN: GROUND TRUTH CHANGED: AWAKE[0m
-[0;32mI (67610) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (68370) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 3.5% | Latency: 754.37 ms | Free SRAM: 266039 B | Free PSRAM: 3489436 B[0m
-[0;32mI (68650) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (68650) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;32mI (69410) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 2.3% | Latency: 758.17 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (69690) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (70450) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 4.3% | Latency: 758.31 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (70740) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (71500) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 8.6% | Latency: 756.16 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (71800) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (72550) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 0.8% | Latency: 754.39 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (72850) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (73600) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 2.7% | Latency: 754.39 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (73910) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (74660) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 5.1% | Latency: 754.38 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (74970) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (74970) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;32mI (75730) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 7.4% | Latency: 754.59 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (76030) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (76780) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 4.3% | Latency: 754.93 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (77090) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (77090) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;32mI (77840) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 5.1% | Latency: 755.21 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (78140) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (78140) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
-[0;32mI (78900) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 5.9% | Latency: 754.39 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (79200) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (79950) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 3.5% | Latency: 754.44 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (80250) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (81000) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 2.7% | Latency: 754.34 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (81300) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (82050) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 0.8% | Latency: 754.38 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (82350) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (82350) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;32mI (83110) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 1.2% | Latency: 754.66 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (83410) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (83410) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
-[0;32mI (84170) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 59.8% | Latency: 754.88 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (84450) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (85210) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 31.2% | Latency: 758.66 ms | Free SRAM: 266039 B | Free PSRAM: 3489436 B[0m
-[0;32mI (85510) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (86260) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 23.4% | Latency: 754.34 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (86560) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (87310) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 0.8% | Latency: 754.39 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (87610) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (88360) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 20.3% | Latency: 754.39 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
+[0;32mI (23100) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.444 | MAR: 0.282 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (23400) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (23400) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.440 | MAR: 0.285 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (23710) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (23710) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.435 | MAR: 0.288 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (24020) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (24020) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.430 | MAR: 0.292 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (24330) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (24330) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (24330) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.431 | MAR: 0.298 | PERCLOS: 0.00 | Latency: 0.36 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (24640) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (24640) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.427 | MAR: 0.300 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (24950) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (24950) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.429 | MAR: 0.304 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (25260) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (25260) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.427 | MAR: 0.306 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (25560) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (25560) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.429 | MAR: 0.309 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (25870) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (25870) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.429 | MAR: 0.313 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (26180) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (26180) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.427 | MAR: 0.315 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (26490) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (26490) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.423 | MAR: 0.318 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (26800) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (26800) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.419 | MAR: 0.321 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (27110) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (27110) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.417 | MAR: 0.324 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (27420) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (27420) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (27420) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.418 | MAR: 0.327 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (27740) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (27740) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.418 | MAR: 0.324 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (28060) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (28060) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.422 | MAR: 0.322 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (28370) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (28370) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.423 | MAR: 0.322 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (28680) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (28680) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.426 | MAR: 0.322 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (28980) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (28980) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.424 | MAR: 0.322 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (29290) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (29290) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (29290) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.426 | MAR: 0.322 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (29610) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (29610) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.428 | MAR: 0.316 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (29920) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (29920) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.433 | MAR: 0.318 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266139 B | Free PSRAM: 3489436 B[0m
+[0;32mI (30230) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (30230) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.434 | MAR: 0.320 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (30540) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (30540) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.436 | MAR: 0.323 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (30850) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (30850) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.436 | MAR: 0.327 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (31160) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (31160) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (31160) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.436 | MAR: 0.329 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (31480) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (31480) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.440 | MAR: 0.332 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (31790) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (31790) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.436 | MAR: 0.334 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266139 B | Free PSRAM: 3489436 B[0m
+[0;32mI (32100) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (32100) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (32100) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.435 | MAR: 0.336 | PERCLOS: 0.00 | Latency: 0.41 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (32420) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (32420) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.431 | MAR: 0.339 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (32740) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (32740) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (32750) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.431 | MAR: 0.341 | PERCLOS: 0.00 | Latency: 0.28 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (33060) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (33060) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.427 | MAR: 0.345 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (33370) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (33370) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.428 | MAR: 0.346 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (33670) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (33680) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.429 | MAR: 0.347 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266127 B | Free PSRAM: 3489436 B[0m
+[0;32mI (34000) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (34010) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.432 | MAR: 0.349 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266139 B | Free PSRAM: 3489436 B[0m
+[0;32mI (34310) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (34310) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.431 | MAR: 0.351 | PERCLOS: 0.00 | Latency: 0.28 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (34620) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (34620) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (34620) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.432 | MAR: 0.352 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (34930) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (34930) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.433 | MAR: 0.354 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (35240) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (35240) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.432 | MAR: 0.356 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (35550) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (35550) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.431 | MAR: 0.357 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (35860) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (35860) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.428 | MAR: 0.358 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (36170) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (36170) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.426 | MAR: 0.359 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (36480) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (36480) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.422 | MAR: 0.362 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (36790) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (36790) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.426 | MAR: 0.364 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (37100) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (37100) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.425 | MAR: 0.366 | PERCLOS: 0.00 | Latency: 0.35 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (37430) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (37430) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.426 | MAR: 0.367 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (37740) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (37740) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.428 | MAR: 0.368 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (38050) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (38050) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.428 | MAR: 0.369 | PERCLOS: 0.00 | Latency: 0.37 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (38350) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (38350) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.428 | MAR: 0.372 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (38660) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (38660) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.429 | MAR: 0.372 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (38970) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (38970) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.430 | MAR: 0.374 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266123 B | Free PSRAM: 3489436 B[0m
+[0;32mI (39280) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (39280) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.427 | MAR: 0.375 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (39590) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (39590) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.427 | MAR: 0.377 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (39900) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (39900) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.426 | MAR: 0.378 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266139 B | Free PSRAM: 3489436 B[0m
+[0;32mI (40210) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (40210) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.424 | MAR: 0.378 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (40510) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (40520) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.421 | MAR: 0.379 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (40850) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (40850) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.419 | MAR: 0.381 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (41160) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (41160) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.417 | MAR: 0.382 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (41470) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (41470) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.417 | MAR: 0.384 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266139 B | Free PSRAM: 3489436 B[0m
+[0;32mI (41780) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (41780) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.419 | MAR: 0.385 | PERCLOS: 0.00 | Latency: 0.36 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (42110) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (42110) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.419 | MAR: 0.386 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (42420) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (42420) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.418 | MAR: 0.386 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (42710) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (42710) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.420 | MAR: 0.386 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (43190) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (43190) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.423 | MAR: 0.387 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (43500) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (43500) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.426 | MAR: 0.388 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (43810) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (43810) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.427 | MAR: 0.390 | PERCLOS: 0.00 | Latency: 0.34 ms | Free SRAM: 266139 B | Free PSRAM: 3489436 B[0m
+[0;32mI (44110) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (44110) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.428 | MAR: 0.391 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (44420) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (44420) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.428 | MAR: 0.392 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (44730) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (44730) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.428 | MAR: 0.392 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (45020) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (45020) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.430 | MAR: 0.394 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (45530) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (45530) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.428 | MAR: 0.395 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (45840) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (45840) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.428 | MAR: 0.396 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266139 B | Free PSRAM: 3489436 B[0m
+[0;32mI (46150) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (46150) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.432 | MAR: 0.397 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (46450) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (46450) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (46460) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.433 | MAR: 0.399 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (46770) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (46770) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.433 | MAR: 0.401 | PERCLOS: 0.00 | Latency: 0.28 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (47080) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (47080) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.436 | MAR: 0.402 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (47390) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (47390) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.437 | MAR: 0.402 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266127 B | Free PSRAM: 3489436 B[0m
+[0;32mI (47700) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (47700) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (47700) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.436 | MAR: 0.403 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (48010) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (48010) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.435 | MAR: 0.405 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (48320) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (48320) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.437 | MAR: 0.406 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266139 B | Free PSRAM: 3489436 B[0m
+[0;32mI (48630) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (48630) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.437 | MAR: 0.408 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (48950) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (48950) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.437 | MAR: 0.409 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (49260) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (49260) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (49260) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.439 | MAR: 0.410 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (49580) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (49580) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.439 | MAR: 0.411 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (49890) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (49890) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.441 | MAR: 0.413 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (50210) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (50210) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.444 | MAR: 0.414 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (50520) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (50520) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (50520) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.448 | MAR: 0.416 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (50840) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (50840) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.450 | MAR: 0.418 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (51150) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (51150) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (51150) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.450 | MAR: 0.418 | PERCLOS: 0.00 | Latency: 0.45 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (51470) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (51470) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.451 | MAR: 0.420 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (51780) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (51780) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.455 | MAR: 0.420 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (52090) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (52090) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (52090) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.454 | MAR: 0.420 | PERCLOS: 0.00 | Latency: 0.39 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (52410) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (52410) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.456 | MAR: 0.421 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (52730) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (52730) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.455 | MAR: 0.422 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (53040) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (53040) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.455 | MAR: 0.423 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (53350) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (53350) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.455 | MAR: 0.424 | PERCLOS: 0.00 | Latency: 0.35 ms | Free SRAM: 266127 B | Free PSRAM: 3489436 B[0m
+[0;32mI (53650) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (53650) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.455 | MAR: 0.424 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (53960) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (53960) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.455 | MAR: 0.424 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (54270) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (54270) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (54280) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.455 | MAR: 0.424 | PERCLOS: 0.00 | Latency: 0.34 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (54590) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (54590) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.456 | MAR: 0.425 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (54900) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (54900) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.458 | MAR: 0.426 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (55210) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (55210) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.458 | MAR: 0.426 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (55520) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (55520) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.459 | MAR: 0.427 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (55830) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (55830) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.459 | MAR: 0.428 | PERCLOS: 0.00 | Latency: 0.38 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (56150) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (56160) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (56160) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.459 | MAR: 0.429 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (56470) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (56470) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.459 | MAR: 0.429 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (56780) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (56780) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.457 | MAR: 0.430 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (57080) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (57080) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (57090) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.457 | MAR: 0.430 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (57410) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (57410) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (57410) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.457 | MAR: 0.429 | PERCLOS: 0.00 | Latency: 0.39 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (57780) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (57780) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.457 | MAR: 0.430 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (58090) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (58090) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.459 | MAR: 0.430 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266127 B | Free PSRAM: 3489436 B[0m
+[0;32mI (58400) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (58400) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.457 | MAR: 0.431 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (58700) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (58700) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.457 | MAR: 0.432 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (59040) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (59040) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.458 | MAR: 0.432 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266139 B | Free PSRAM: 3489436 B[0m
+[0;32mI (59350) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (59350) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.456 | MAR: 0.433 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (59660) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (59660) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.457 | MAR: 0.433 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (59960) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (59970) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.455 | MAR: 0.434 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (60300) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (60300) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.454 | MAR: 0.434 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (60610) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (60610) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.454 | MAR: 0.435 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (60920) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (60920) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.456 | MAR: 0.435 | PERCLOS: 0.00 | Latency: 0.43 ms | Free SRAM: 266127 B | Free PSRAM: 3489436 B[0m
+[0;32mI (61220) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (61220) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.455 | MAR: 0.436 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (61530) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (61530) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.454 | MAR: 0.436 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (61840) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (61840) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.452 | MAR: 0.436 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (62130) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (62130) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.453 | MAR: 0.437 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (62640) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (62640) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.450 | MAR: 0.438 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (62950) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (62950) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.447 | MAR: 0.439 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (63260) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (63260) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.445 | MAR: 0.440 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (63560) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (63560) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.443 | MAR: 0.440 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (63870) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (63870) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.442 | MAR: 0.441 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (64180) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (64180) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.440 | MAR: 0.441 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (64490) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (64490) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.441 | MAR: 0.442 | PERCLOS: 0.00 | Latency: 0.36 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (64800) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (64800) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.439 | MAR: 0.442 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (65110) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (65110) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.437 | MAR: 0.443 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (65420) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (65420) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.435 | MAR: 0.444 | PERCLOS: 0.00 | Latency: 0.38 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (65720) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (65720) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.435 | MAR: 0.445 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (66030) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (66030) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.435 | MAR: 0.445 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (66340) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (66340) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.436 | MAR: 0.446 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (66650) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (66650) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.440 | MAR: 0.446 | PERCLOS: 0.00 | Latency: 0.40 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (66960) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (66960) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.440 | MAR: 0.447 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (67270) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (67270) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.438 | MAR: 0.447 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (67580) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (67580) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.436 | MAR: 0.447 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (67880) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (67880) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.437 | MAR: 0.448 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (68190) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (68190) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.435 | MAR: 0.448 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (68500) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (68500) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.435 | MAR: 0.449 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (68810) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (68810) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.435 | MAR: 0.449 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (69120) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (69120) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.435 | MAR: 0.449 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (69430) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (69430) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.434 | MAR: 0.449 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (69740) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (69740) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.432 | MAR: 0.450 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (70040) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (70040) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (70050) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.432 | MAR: 0.445 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (70360) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (70360) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.432 | MAR: 0.442 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (70670) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (70670) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.434 | MAR: 0.442 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (70980) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (70980) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (70980) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.433 | MAR: 0.438 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (71290) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (71300) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (71300) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.433 | MAR: 0.433 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (71610) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (71610) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 3/10)[0m
+[0;32mI (71610) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.432 | MAR: 0.429 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (71920) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (71920) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 4/10)[0m
+[0;32mI (71920) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.431 | MAR: 0.431 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;33mW (71970) DMS_MAIN: GROUND TRUTH CHANGED: FATIGUE[0m
+[0;32mI (72340) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (72340) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.430 | MAR: 0.431 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (72650) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (72650) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (72650) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.431 | MAR: 0.430 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (72970) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (72970) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.433 | MAR: 0.431 | PERCLOS: 0.00 | Latency: 0.39 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (73280) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (73280) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (73280) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.435 | MAR: 0.436 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (73590) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (73590) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.436 | MAR: 0.433 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (73900) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (73900) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.438 | MAR: 0.432 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (74210) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (74210) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.437 | MAR: 0.433 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (74520) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (74520) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.436 | MAR: 0.433 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (74830) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (74830) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (74830) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.435 | MAR: 0.432 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (75150) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (75150) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (75150) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.433 | MAR: 0.433 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (75470) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (75470) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 3/10)[0m
+[0;32mI (75470) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.434 | MAR: 0.434 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (75780) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (75780) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 4/10)[0m
+[0;32mI (75790) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.433 | MAR: 0.434 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (76100) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (76100) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 5/10)[0m
+[0;32mI (76100) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.431 | MAR: 0.429 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (76410) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (76410) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 6/10)[0m
+[0;32mI (76410) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.429 | MAR: 0.429 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (76730) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (76730) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 7/10)[0m
+[0;32mI (76730) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.428 | MAR: 0.430 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (77040) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (77050) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 8/10)[0m
+[0;32mI (77050) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.427 | MAR: 0.430 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (77360) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (77360) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.426 | MAR: 0.431 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (77670) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (77670) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.425 | MAR: 0.431 | PERCLOS: 0.00 | Latency: 0.34 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (77970) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (77970) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (77980) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.423 | MAR: 0.430 | PERCLOS: 0.00 | Latency: 0.37 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (78310) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (78310) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (78310) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.423 | MAR: 0.430 | PERCLOS: 0.00 | Latency: 0.35 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (78620) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (78620) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.424 | MAR: 0.430 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (78930) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (78930) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.422 | MAR: 0.430 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (79230) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (79230) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (79240) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.421 | MAR: 0.431 | PERCLOS: 0.00 | Latency: 0.41 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (79570) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (79570) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.420 | MAR: 0.432 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (79880) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (79880) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.421 | MAR: 0.433 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266127 B | Free PSRAM: 3489436 B[0m
+[0;32mI (80190) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (80190) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.421 | MAR: 0.433 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (80490) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (80500) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.422 | MAR: 0.433 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266127 B | Free PSRAM: 3489436 B[0m
+[0;32mI (80830) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (80830) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (80830) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.421 | MAR: 0.434 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (81140) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (81140) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.420 | MAR: 0.434 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (81450) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (81450) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.419 | MAR: 0.435 | PERCLOS: 0.00 | Latency: 0.34 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (81750) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (81760) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (81760) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.418 | MAR: 0.435 | PERCLOS: 0.00 | Latency: 0.44 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (82090) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (82090) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.417 | MAR: 0.435 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (82400) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (82400) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.417 | MAR: 0.434 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (82710) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (82710) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.419 | MAR: 0.434 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (83010) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (83010) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.418 | MAR: 0.435 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (83350) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (83350) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.417 | MAR: 0.435 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (83660) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (83660) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.415 | MAR: 0.436 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (83970) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (83970) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.412 | MAR: 0.437 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266127 B | Free PSRAM: 3489436 B[0m
+[0;32mI (84270) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (84280) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.413 | MAR: 0.437 | PERCLOS: 0.00 | Latency: 0.34 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (84610) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (84610) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.413 | MAR: 0.437 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (84920) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (84920) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.413 | MAR: 0.437 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (85230) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (85230) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.413 | MAR: 0.438 | PERCLOS: 0.00 | Latency: 0.40 ms | Free SRAM: 266127 B | Free PSRAM: 3489436 B[0m
+[0;32mI (85530) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (85530) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.415 | MAR: 0.438 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (85840) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (85840) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (85840) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.414 | MAR: 0.438 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266239 B | Free PSRAM: 3489436 B[0m
+[0;32mI (86160) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (86160) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.412 | MAR: 0.438 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (86470) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (86470) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.412 | MAR: 0.438 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266139 B | Free PSRAM: 3489436 B[0m
+[0;32mI (86780) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (86780) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.413 | MAR: 0.438 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (87090) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (87090) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.412 | MAR: 0.439 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266131 B | Free PSRAM: 3489436 B[0m
+[0;32mI (87400) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (87400) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.411 | MAR: 0.440 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (87700) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (87710) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.411 | MAR: 0.441 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (88030) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (88030) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.409 | MAR: 0.441 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (88340) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (88340) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.408 | MAR: 0.441 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
 [0;32mI (88650) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (89410) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 20.3% | Latency: 758.46 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (89710) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (90460) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 20.3% | Latency: 754.87 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (90770) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (91520) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 10.5% | Latency: 755.26 ms | Free SRAM: 266035 B | Free PSRAM: 3489436 B[0m
-[0;32mI (91820) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (92570) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 27.3% | Latency: 754.35 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (92860) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (92860) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
-[0;32mI (93620) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 0.8% | Latency: 757.43 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (93920) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (93920) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
-[0;32mI (94670) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 17.2% | Latency: 754.52 ms | Free SRAM: 266155 B | Free PSRAM: 3489436 B[0m
-[0;32mI (94960) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (94960) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 3/10)[0m
-[0;32mI (95720) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 7.4% | Latency: 758.46 ms | Free SRAM: 266155 B | Free PSRAM: 3489436 B[0m
+[0;32mI (88650) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.409 | MAR: 0.441 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (88950) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (88950) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.410 | MAR: 0.442 | PERCLOS: 0.00 | Latency: 0.34 ms | Free SRAM: 266127 B | Free PSRAM: 3489436 B[0m
+[0;32mI (89280) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (89280) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (89290) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.410 | MAR: 0.442 | PERCLOS: 0.00 | Latency: 0.53 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (89650) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (89650) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (89650) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.413 | MAR: 0.443 | PERCLOS: 0.00 | Latency: 0.36 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (89970) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (89970) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 3/10)[0m
+[0;32mI (89970) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.412 | MAR: 0.443 | PERCLOS: 0.00 | Latency: 0.36 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (90280) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (90280) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 4/10)[0m
+[0;32mI (90280) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.412 | MAR: 0.443 | PERCLOS: 0.00 | Latency: 0.40 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (90580) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (90580) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 5/10)[0m
+[0;32mI (90580) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.412 | MAR: 0.444 | PERCLOS: 0.00 | Latency: 0.36 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (91090) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (91090) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.412 | MAR: 0.444 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (91400) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (91400) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.413 | MAR: 0.445 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (91690) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (91690) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.414 | MAR: 0.445 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (92170) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (92170) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (92180) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.414 | MAR: 0.446 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266239 B | Free PSRAM: 3489436 B[0m
+[0;32mI (92470) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (92470) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (92480) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.415 | MAR: 0.446 | PERCLOS: 0.00 | Latency: 0.41 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (92890) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (92890) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.415 | MAR: 0.447 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (93200) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (93200) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (93200) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.416 | MAR: 0.446 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266239 B | Free PSRAM: 3489436 B[0m
+[0;32mI (93520) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (93520) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (93520) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.415 | MAR: 0.447 | PERCLOS: 0.00 | Latency: 0.36 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (93840) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (93840) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.415 | MAR: 0.447 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (94150) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (94160) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.417 | MAR: 0.447 | PERCLOS: 0.00 | Latency: 0.34 ms | Free SRAM: 266127 B | Free PSRAM: 3489436 B[0m
+[0;32mI (94460) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (94460) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (94460) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.418 | MAR: 0.447 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (94780) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (94780) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.417 | MAR: 0.448 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (95080) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (95090) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.418 | MAR: 0.448 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266127 B | Free PSRAM: 3489436 B[0m
+[0;32mI (95410) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (95420) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.419 | MAR: 0.449 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266135 B | Free PSRAM: 3489436 B[0m
+[0;32mI (95720) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (95720) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (95720) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.420 | MAR: 0.449 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266239 B | Free PSRAM: 3489436 B[0m
 [0;32mI (96020) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (96020) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 4/10)[0m
-[0;32mI (96780) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 2.0% | Latency: 754.97 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (97070) DMS_MAIN: Inference complete. Faces found: 0[0m
-[0;33mW (97080) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 5/10)[0m
-[0;32mI (97830) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 1.6% | Latency: 755.34 ms | Free SRAM: 266163 B | Free PSRAM: 3489436 B[0m
-[0;32mI (98130) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (98890) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 10.5% | Latency: 755.61 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (99190) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (99940) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 27.3% | Latency: 754.36 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (100240) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (100990) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 14.5% | Latency: 754.40 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (101280) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (102040) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 23.4% | Latency: 758.13 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (102340) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (103090) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 27.3% | Latency: 754.65 ms | Free SRAM: 266039 B | Free PSRAM: 3489436 B[0m
-[0;32mI (103400) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (104150) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 20.3% | Latency: 754.88 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (104460) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (105210) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 27.3% | Latency: 755.34 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (105510) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (106260) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 17.2% | Latency: 754.40 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (106550) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (107300) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 20.3% | Latency: 757.45 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (107610) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (108360) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 31.2% | Latency: 754.36 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (108670) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (109420) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 40.2% | Latency: 754.37 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (109730) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (110490) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 20.3% | Latency: 754.55 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;33mW (110520) DMS_MAIN: GROUND TRUTH CHANGED: FATIGUE[0m
-[0;32mI (110890) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (111640) DMS_MAIN: METRICS | GT: 1 | Status: FN |Fatigue: 8.6% | Latency: 754.34 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (111920) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (112680) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (112680) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 82.8% | Latency: 758.39 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (112990) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (113740) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (113750) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 94.1% | Latency: 754.89 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (114030) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (114790) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (114790) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 95.7% | Latency: 758.78 ms | Free SRAM: 266043 B | Free PSRAM: 3489436 B[0m
-[0;32mI (115070) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (115830) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (115830) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 99.2% | Latency: 758.82 ms | Free SRAM: 266039 B | Free PSRAM: 3489436 B[0m
-[0;32mI (116130) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (116880) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (116880) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 95.7% | Latency: 754.82 ms | Free SRAM: 266039 B | Free PSRAM: 3489436 B[0m
-[0;32mI (117190) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (117940) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (117940) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 97.3% | Latency: 754.84 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (118250) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (119000) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (119000) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 95.7% | Latency: 754.83 ms | Free SRAM: 266055 B | Free PSRAM: 3489436 B[0m
-[0;32mI (119310) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (120060) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (120060) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 99.2% | Latency: 754.82 ms | Free SRAM: 266051 B | Free PSRAM: 3489436 B[0m
-[0;32mI (120370) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (121130) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (121130) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 94.9% | Latency: 754.82 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (121430) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (122190) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (122190) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 95.7% | Latency: 755.09 ms | Free SRAM: 266039 B | Free PSRAM: 3489436 B[0m
-[0;32mI (122490) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (123240) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (123240) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 95.7% | Latency: 755.34 ms | Free SRAM: 266039 B | Free PSRAM: 3489436 B[0m
-[0;32mI (123550) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (124300) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (124300) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 96.5% | Latency: 755.72 ms | Free SRAM: 266039 B | Free PSRAM: 3489436 B[0m
-[0;32mI (124600) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (125360) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (125360) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 82.8% | Latency: 754.82 ms | Free SRAM: 266039 B | Free PSRAM: 3489436 B[0m
-[0;32mI (125670) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (126420) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (126420) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 95.7% | Latency: 754.79 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (126730) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (127480) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (127480) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 98.4% | Latency: 754.85 ms | Free SRAM: 266051 B | Free PSRAM: 3489436 B[0m
-[0;32mI (127770) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;33mW (128530) DMS_MAIN: FATIGUE DETECTED[0m
-[0;32mI (128530) DMS_MAIN: METRICS | GT: 1 | Status: TP |Fatigue: 82.8% | Latency: 758.37 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (128820) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (129580) DMS_MAIN: METRICS | GT: 1 | Status: FN |Fatigue: 23.4% | Latency: 758.25 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (129880) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (130630) DMS_MAIN: METRICS | GT: 1 | Status: FN |Fatigue: 27.3% | Latency: 754.86 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (130940) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (131690) DMS_MAIN: METRICS | GT: 1 | Status: FN |Fatigue: 20.3% | Latency: 755.10 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;33mW (131730) DMS_MAIN: GROUND TRUTH CHANGED: AWAKE[0m
-[0;32mI (132080) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (132840) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 45.3% | Latency: 754.40 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (133140) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (133900) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 14.5% | Latency: 754.55 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (134180) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (134940) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 31.2% | Latency: 758.39 ms | Free SRAM: 266051 B | Free PSRAM: 3489436 B[0m
-[0;32mI (135230) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (135990) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 27.3% | Latency: 755.58 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
-[0;32mI (136290) DMS_MAIN: Inference complete. Faces found: 1[0m
-[0;32mI (137040) DMS_MAIN: METRICS | GT: 0 | Status: TN |Fatigue: 31.2% | Latency: 754.36 ms | Free SRAM: 266047 B | Free PSRAM: 3489436 B[0m
+[0;33mW (96020) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (96020) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.421 | MAR: 0.450 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (96490) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (96490) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 3/10)[0m
+[0;32mI (96490) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.422 | MAR: 0.450 | PERCLOS: 0.00 | Latency: 0.38 ms | Free SRAM: 266251 B | Free PSRAM: 3489436 B[0m
+[0;32mI (96860) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (96860) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.420 | MAR: 0.451 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (97170) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (97170) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.421 | MAR: 0.451 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266071 B | Free PSRAM: 3489436 B[0m
+[0;32mI (97480) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (97480) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.420 | MAR: 0.452 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (97780) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (97790) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.419 | MAR: 0.452 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (98120) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (98120) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.418 | MAR: 0.452 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (98430) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (98430) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (98430) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.418 | MAR: 0.452 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266183 B | Free PSRAM: 3489436 B[0m
+[0;32mI (98740) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (98740) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (98740) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.418 | MAR: 0.452 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266183 B | Free PSRAM: 3489436 B[0m
+[0;32mI (99060) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (99060) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.417 | MAR: 0.453 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (99370) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (99370) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.417 | MAR: 0.453 | PERCLOS: 0.00 | Latency: 0.38 ms | Free SRAM: 266071 B | Free PSRAM: 3489436 B[0m
+[0;32mI (99740) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (99740) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.415 | MAR: 0.453 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (100050) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (100050) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (100050) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.414 | MAR: 0.453 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266183 B | Free PSRAM: 3489436 B[0m
+[0;32mI (100360) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (100360) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.413 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.40 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (100660) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (100670) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.412 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266071 B | Free PSRAM: 3489436 B[0m
+[0;32mI (101000) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (101000) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (101000) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.412 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266183 B | Free PSRAM: 3489436 B[0m
+[0;32mI (101320) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (101320) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (101320) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.411 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266183 B | Free PSRAM: 3489436 B[0m
+[0;32mI (101620) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (101620) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.409 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (102080) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (102080) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.409 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266071 B | Free PSRAM: 3489436 B[0m
+[0;32mI (102390) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (102390) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.408 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (102700) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (102700) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.408 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (103000) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (103010) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.407 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.34 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (103340) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (103340) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (103340) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.407 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266183 B | Free PSRAM: 3489436 B[0m
+[0;32mI (103660) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (103660) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.405 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (103970) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (103970) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.405 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (104280) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (104280) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.405 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (104600) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (104600) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.404 | MAR: 0.454 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266067 B | Free PSRAM: 3489436 B[0m
+[0;32mI (104910) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (104910) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.406 | MAR: 0.453 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (105200) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (105200) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.404 | MAR: 0.452 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266063 B | Free PSRAM: 3489436 B[0m
+[0;32mI (105680) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (105680) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.404 | MAR: 0.448 | PERCLOS: 0.00 | Latency: 0.32 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (105990) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (105990) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.405 | MAR: 0.447 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (106300) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (106300) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.407 | MAR: 0.446 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (106600) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (106600) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.406 | MAR: 0.445 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (106940) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (106940) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.407 | MAR: 0.445 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266071 B | Free PSRAM: 3489436 B[0m
+[0;32mI (107250) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (107250) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.407 | MAR: 0.443 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (107560) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (107560) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.407 | MAR: 0.443 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266071 B | Free PSRAM: 3489436 B[0m
+[0;32mI (107860) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (107860) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.408 | MAR: 0.439 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (108170) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (108170) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.410 | MAR: 0.435 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (108480) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (108480) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.410 | MAR: 0.434 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266071 B | Free PSRAM: 3489436 B[0m
+[0;32mI (108790) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (108790) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.411 | MAR: 0.434 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (109100) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (109100) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.413 | MAR: 0.433 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (109410) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (109410) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.413 | MAR: 0.433 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (109700) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (109700) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.417 | MAR: 0.432 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (110180) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (110180) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.417 | MAR: 0.432 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266067 B | Free PSRAM: 3489436 B[0m
+[0;32mI (110490) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (110490) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.417 | MAR: 0.431 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (110800) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (110800) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.416 | MAR: 0.432 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (111100) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (111100) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (111110) DMS_MAIN: METRICS | GT: 1 | Status: FN | EAR: 0.414 | MAR: 0.432 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266183 B | Free PSRAM: 3489436 B[0m
+[0;33mW (111150) DMS_MAIN: GROUND TRUTH CHANGED: AWAKE[0m
+[0;32mI (111520) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (111520) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (111520) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.413 | MAR: 0.428 | PERCLOS: 0.00 | Latency: 0.37 ms | Free SRAM: 266183 B | Free PSRAM: 3489436 B[0m
+[0;32mI (111820) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (111820) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.414 | MAR: 0.428 | PERCLOS: 0.00 | Latency: 0.29 ms | Free SRAM: 266071 B | Free PSRAM: 3489436 B[0m
+[0;32mI (112340) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (112340) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (112350) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.414 | MAR: 0.427 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266183 B | Free PSRAM: 3489436 B[0m
+[0;32mI (112660) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (112660) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.414 | MAR: 0.427 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (112970) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (112970) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (112970) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.412 | MAR: 0.426 | PERCLOS: 0.00 | Latency: 0.33 ms | Free SRAM: 266175 B | Free PSRAM: 3489436 B[0m
+[0;32mI (113290) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (113290) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.413 | MAR: 0.426 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (113600) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (113600) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.413 | MAR: 0.426 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (113910) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (113910) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.411 | MAR: 0.425 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (114220) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (114220) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.411 | MAR: 0.425 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266071 B | Free PSRAM: 3489436 B[0m
+[0;32mI (114520) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (114520) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (114530) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.408 | MAR: 0.424 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266183 B | Free PSRAM: 3489436 B[0m
+[0;32mI (114820) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (114830) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.409 | MAR: 0.424 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (115220) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (115220) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.409 | MAR: 0.420 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (115510) DMS_MAIN: Inference complete. Faces found: 1[0m
+[0;32mI (115510) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.409 | MAR: 0.415 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266075 B | Free PSRAM: 3489436 B[0m
+[0;32mI (115940) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (115940) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 1/10)[0m
+[0;32mI (115950) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.407 | MAR: 0.411 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266183 B | Free PSRAM: 3489436 B[0m
+[0;32mI (116210) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (116210) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 2/10)[0m
+[0;32mI (116210) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.407 | MAR: 0.407 | PERCLOS: 0.00 | Latency: 0.31 ms | Free SRAM: 266263 B | Free PSRAM: 3489436 B[0m
+[0;32mI (116460) DMS_MAIN: Inference complete. Faces found: 0[0m
+[0;33mW (116460) DMS_MAIN: Face lost (glare/yawn). Using last known pos (Frame 3/10)[0m
+[0;32mI (116470) DMS_MAIN: METRICS | GT: 0 | Status: TN | EAR: 0.407 | MAR: 0.403 | PERCLOS: 0.00 | Latency: 0.30 ms | Free SRAM: 266263 B | Free PSRAM: 3489436 B[0m
 Done

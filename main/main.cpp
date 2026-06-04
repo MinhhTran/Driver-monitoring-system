@@ -105,8 +105,8 @@ static esp_err_t init_camera() {
 }
 
 // Main execution loop
-//#define RUN_HEURISTIC_PIPELINE
-#define RUN_DEEP_LEARNING_PIPELINE
+#define RUN_HEURISTIC_PIPELINE
+//#define RUN_DEEP_LEARNING_PIPELINE
 
 HumanFaceDetectMSR01 face_detector_stage1(0.2F, 0.3F, 1, 0.3F);
 HumanFaceDetectMNP01 face_detector_stage2(0.3F, 0.3F, 1);
@@ -221,8 +221,20 @@ void dms_task(void *pvParameters) {
                         heuristic_engine.UpdateMetrics(rgb888_buf, fb->width, fb->height, detected_face);
                         bool is_drowsy_heuristic = heuristic_engine.IsDrowsy();
                         bool is_yawning = heuristic_engine.IsYawning();
+                        bool model_predicts_fatigue = (is_drowsy_heuristic || is_yawning);
 
-                        if (is_drowsy_heuristic || is_yawning > 0.75f) {
+                        const char* metric_status = "UNKNOWN";
+                        if (ground_truth_fatigue == true && model_predicts_fatigue == true) {
+                            metric_status = "TP";
+                        } else if (ground_truth_fatigue == false && model_predicts_fatigue == true) {
+                            metric_status = "FP";
+                        } else if (ground_truth_fatigue == false && model_predicts_fatigue == false) {
+                            metric_status = "TN";
+                        } else if (ground_truth_fatigue == true && model_predicts_fatigue == false) {
+                            metric_status = "FN";
+                        }
+
+                        if (model_predicts_fatigue) {
                             ESP_LOGW(TAG, "FATIGUE DETECTED!");
                             gpio_set_level(ALERT_PIN, 1); // Trigger Buzzer
                         } else {
@@ -234,9 +246,12 @@ void dms_task(void *pvParameters) {
                         size_t free_sram = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
                         size_t free_psram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
 
-                        ESP_LOGI(TAG, "METRICS | EAR: %.3f | MAR: %.3f | Latency: %.2f ms | Free SRAM: %zu B | Free PSRAM: %zu B",
+                        ESP_LOGI(TAG, "METRICS | GT: %d | Status: %s | EAR: %.3f | MAR: %.3f | PERCLOS: %.2f | Latency: %.2f ms | Free SRAM: %zu B | Free PSRAM: %zu B",
+                            ground_truth_fatigue,
+                            metric_status,
                             heuristic_engine.GetEAR(),
                             heuristic_engine.GetMAR(),
+                            heuristic_engine.GetPerclos(),
                             latency_ms,
                             free_sram,
                             free_psram);

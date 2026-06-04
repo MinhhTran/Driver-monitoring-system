@@ -57,7 +57,57 @@ Average Free PSRAM: 3489436 Bytes (3.33 MB)
 
 B. Heuristic pipeline
 1. Baseline test
+Total Frames Evaluated: 303
+------------------------------------------
+True Positives  (TP) : 0
+False Negatives (FN) : 103
+True Negatives  (TN) : 200
+False Positives (FP) : 0
+------------------------------------------
+True Positive Rate (TPR) : 0.00%
+False Positive Rate (FPR): 0.00%
+Average Latency   : 0.32 ms
+Average Free SRAM : 266150 Bytes (259.91 KB)
+Average Free PSRAM: 3489436 Bytes (3.33 MB)
 
 2. Low-light test
+Total Frames Evaluated: 316
+------------------------------------------
+True Positives  (TP) : 0
+False Negatives (FN) : 120
+True Negatives  (TN) : 196
+False Positives (FP) : 0
+------------------------------------------
+True Positive Rate (TPR) : 0.00%
+False Positive Rate (FPR): 0.00%
+Average Latency   : 0.32 ms
+Average Free SRAM : 266150 Bytes (259.91 KB)
+Average Free PSRAM: 3489436 Bytes (3.33 MB)
+
 3. Rapid transition test
+Total Frames Evaluated: 305
+------------------------------------------
+True Positives  (TP) : 0
+False Negatives (FN) : 107
+True Negatives  (TN) : 198
+False Positives (FP) : 0
+------------------------------------------
+True Positive Rate (TPR) : 0.00%
+False Positive Rate (FPR): 0.00%
+Average Latency   : 0.32 ms
+Average Free SRAM : 266150 Bytes (259.91 KB)
+Average Free PSRAM: 3489436 Bytes (3.33 MB)
+
 4. OCclusion test
+Total Frames Evaluated: 326
+------------------------------------------
+True Positives  (TP) : 0
+False Negatives (FN) : 121
+True Negatives  (TN) : 205
+False Positives (FP) : 0
+------------------------------------------
+True Positive Rate (TPR) : 0.00%
+False Positive Rate (FPR): 0.00%
+Average Latency   : 0.32 ms
+Average Free SRAM : 266150 Bytes (259.91 KB)
+Average Free PSRAM: 3489436 Bytes (3.33 MB)
