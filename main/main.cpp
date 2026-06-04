@@ -40,6 +40,8 @@ static const char *TAG = "DMS_MAIN";
 
 // Alert pin
 #define ALERT_PIN GPIO_NUM_21
+#define EXTERNAL_BUTTON_PIN GPIO_NUM_1
+#define ALERT_PIN GPIO_NUM_2
 
 // Global pipeline objects
 HeuristicPipeline heuristic_engine;
@@ -111,6 +113,13 @@ HumanFaceDetectMNP01 face_detector_stage2(0.3F, 0.3F, 1);
 
 void dms_task(void *pvParameters) {
     ESP_LOGI(TAG, "DMS Task Started");
+    bool ground_truth_fatigue = false; // Default is awake
+    bool last_button_state = true; // Default is not pressed
+    int flags = fcntl(fileno(stdin), F_GETFL);
+    fcntl(fileno(stdin), F_SETFL, flags | O_NONBLOCK);
+    gpio_set_direction(EXTERNAL_BUTTON_PIN, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(EXTERNAL_BUTTON_PIN, GPIO_PULLUP_ONLY);
+
     while (true) {
         // 1. Capture camera frame
         camera_fb_t *fb = esp_camera_fb_get();
@@ -120,6 +129,17 @@ void dms_task(void *pvParameters) {
             continue;
         }
         //ESP_LOGI(TAG, "Frame captured! Resolution: %dx%d, Size: %zu bytes", fb->width, fb->height, fb->len);
+
+        bool current_button_state = gpio_get_level(EXTERNAL_BUTTON_PIN);
+        
+        if (current_button_state == 0 && last_button_state == 1) {
+            ground_truth_fatigue = !ground_truth_fatigue;
+            ESP_LOGW(TAG, "GROUND TRUTH CHANGED: %s", ground_truth_fatigue ? "FATIGUE" : "AWAKE");
+            
+            // Prevent a single press not counted twice
+            vTaskDelay(pdMS_TO_TICKS(100)); 
+        }
+        last_button_state = current_button_state;
 
         uint8_t *rgb888_buf = (uint8_t *)heap_caps_malloc(fb->width * fb->height * 3, MALLOC_CAP_SPIRAM);
         bool face_detected = false;
@@ -233,7 +253,19 @@ void dms_task(void *pvParameters) {
                             fatigue_prob = dl_classifier.RunInference();
                         }
 
-                        if (fatigue_prob > 0.7f) {
+                        bool model_predicts_fatigue = (fatigue_prob > 0.7f);
+                        const char* metric_status = "UNKNOWN";
+                        if (ground_truth_fatigue == true && model_predicts_fatigue == true) {
+                            metric_status = "TP";
+                        } else if (ground_truth_fatigue == false && model_predicts_fatigue == true) {
+                            metric_status = "FP";
+                        } else if (ground_truth_fatigue == false && model_predicts_fatigue == false) {
+                            metric_status = "TN";
+                        } else if (ground_truth_fatigue == true && model_predicts_fatigue == false) {
+                            metric_status = "FN";
+                        }
+
+                        if (model_predicts_fatigue) {
                             ESP_LOGW(TAG, "FATIGUE DETECTED");
                             gpio_set_level(ALERT_PIN, 1); // Trigger buzzer
                         } else {
@@ -245,11 +277,13 @@ void dms_task(void *pvParameters) {
                         size_t free_sram = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
                         size_t free_psram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
 
-                        ESP_LOGI(TAG, "METRICS | Fatigue: %.1f%% | Latency: %.2f ms | Free SRAM: %zu B | Free PSRAM: %zu B",
-                                fatigue_prob * 100.0f,
-                                latency_ms,
-                                free_sram,
-                                free_psram);
+                        ESP_LOGI(TAG, "METRICS | GT: %d | Status: %s |Fatigue: %.1f%% | Latency: %.2f ms | Free SRAM: %zu B | Free PSRAM: %zu B",
+                            ground_truth_fatigue,
+                            metric_status,
+                            fatigue_prob * 100.0f,
+                            latency_ms,
+                            free_sram,
+                            free_psram);
                     #endif
                 }
             } else {

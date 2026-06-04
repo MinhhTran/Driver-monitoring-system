@@ -224,6 +224,6 @@ float FatigueClassifier::RunInference() {
     int32_t output_zero_point = output_tensor_->params.zero_point;
 
     float fatigue_probability = (static_cast<float>(quantized_output) - output_zero_point) * output_scale;
-    printf("Arena Used: %zu\n", interpreter_->arena_used_bytes());
+    //printf("Arena Used: %zu\n", interpreter_->arena_used_bytes());
     return fatigue_probability;
 }

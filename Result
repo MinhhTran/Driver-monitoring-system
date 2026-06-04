@@ -1,0 +1,63 @@
+A. Deep learning pipeline
+1. Baseline test
+Total Frames Evaluated: 123
+------------------------------------------
+True Positives  (TP) : 52
+False Negatives (FN) : 5
+True Negatives  (TN) : 65
+False Positives (FP) : 1
+------------------------------------------
+True Positive Rate (TPR) : 91.23%
+False Positive Rate (FPR): 1.52%
+Average Latency   : 754.97 ms
+Average Free SRAM : 266078 Bytes (259.84 KB)
+Average Free PSRAM: 3489436 Bytes (3.33 MB)
+
+2. Low-light test
+Total Frames Evaluated: 119
+------------------------------------------
+True Positives  (TP) : 14
+False Negatives (FN) : 13
+True Negatives  (TN) : 85
+False Positives (FP) : 7
+------------------------------------------
+True Positive Rate (TPR) : 51.85%
+False Positive Rate (FPR): 7.61%
+Average Latency   : 755.30 ms
+Average Free SRAM : 266128 Bytes (259.89 KB)
+Average Free PSRAM: 3489436 Bytes (3.33 MB)
+
+3. Rapid transition test
+Total Frames Evaluated: 115
+------------------------------------------
+True Positives  (TP) : 20
+False Negatives (FN) : 5
+True Negatives  (TN) : 86
+False Positives (FP) : 4
+------------------------------------------
+True Positive Rate (TPR) : 80.00%
+False Positive Rate (FPR): 7.61%
+Average Latency   : 755.20 ms
+Average Free SRAM : 266128 Bytes (259.89 KB)
+Average Free PSRAM: 3489436 Bytes (3.33 MB)
+
+4. Occlusion test
+Total Frames Evaluated: 124
+------------------------------------------
+True Positives  (TP) : 37
+False Negatives (FN) : 6
+True Negatives  (TN) : 78
+False Positives (FP) : 3
+------------------------------------------
+True Positive Rate (TPR) : 86.05%
+False Positive Rate (FPR): 3.70%
+Average Latency   : 755.42 ms
+Average Free SRAM : 266073 Bytes (259.84 KB)
+Average Free PSRAM: 3489436 Bytes (3.33 MB)
+
+B. Heuristic pipeline
+1. Baseline test
+
+2. Low-light test
+3. Rapid transition test
+4. OCclusion test
