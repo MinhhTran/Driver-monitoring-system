@@ -36,7 +36,7 @@ True Negatives  (TN) : 86
 False Positives (FP) : 4
 ------------------------------------------
 True Positive Rate (TPR) : 80.00%
-False Positive Rate (FPR): 7.61%
+False Positive Rate (FPR): 4.44%
 Average Latency   : 755.20 ms
 Average Free SRAM : 266128 Bytes (259.89 KB)
 Average Free PSRAM: 3489436 Bytes (3.33 MB)
