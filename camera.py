@@ -61,7 +61,7 @@ last_log_time = 0
 # Dl debouncing variables
 dl_fatigue_counter = 0
 DL_PROB_THRESHOLD = 0.80      # 80% confidence required per frame
-DL_CONSECUTIVE_FRAMES = 7    # Number of frames to confirm a micro-sleep
+DL_CONSECUTIVE_FRAMES = 10    # Number of frames to confirm a micro-sleep
 dl_alert = False              # Final alert trigger
 
 # 2. Main camera loop

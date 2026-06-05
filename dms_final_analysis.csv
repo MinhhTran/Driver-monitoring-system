@@ -1,3 +1,3 @@
 Condition,Pipeline,Samples,Accuracy (%),TPR (%),FPR (%),Avg Latency (ms),Avg RAM (KB)
-Baseline,DL_quant,2121.0,94.2,0.0,5.8,0.97,351.81
-Baseline,Heuristic,2121.0,95.85,0.0,4.15,0.14,1.02
+Baseline,DL_quant,6766.0,95.79,98.81,21.47,0.81,351.81
+Baseline,Heuristic,6766.0,93.11,69.39,27.37,0.11,1.01
