@@ -100,9 +100,6 @@ Driver-monitoring-system/
 │   ├── metrics                       # Consolidated performance metrics summary
 │   └── Result                        # Raw trial execution output
 │
-├── docs/                             # Hardware schematics and physical setup photos
-│   └── breadboard_setup.jpg          # XIAO ESP32-S3 + OV3660 test rig photograph
-│
 ├── firmware/                         # Embedded C/C++ project (ESP-IDF & FreeRTOS)
 │   ├── main/
 │   │   ├── analyze.c                 # Frame evaluation and profiling routines
