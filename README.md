@@ -174,10 +174,3 @@ python quantize_model.py
 This project forms the experimental implementation of the Bachelor of Science Thesis:
 
 Minh Tran, "Facial Landmark Tracking in Challenging Lighting: A Comparative Analysis of Heuristic Versus Deep Learning for Facial Landmark Tracking in Adverse Conditions", Aalto University School of Science, 2026.
-
-
-***
-
-### Assets to Add
-
-Place the high-resolution breadboard photograph from your project report
