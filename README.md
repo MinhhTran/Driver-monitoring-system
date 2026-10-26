@@ -163,10 +163,10 @@ cd training_and_quantization
 pip install -r ../requirements.txt
 
 # Train or evaluate the base model
-python train_model.py
+py train_model.py
 
 # Quantize model to int8 tflite format
-python quantize_model.py
+py quantize_model.py
 
 ```
 
